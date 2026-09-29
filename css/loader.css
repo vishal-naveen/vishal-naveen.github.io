@@ -1,0 +1,32 @@
+/* Loading screen (js/chrome/loader.js). It exists only while <html> has .is-loading, so visitors
+   without JavaScript never see it. The curtain lifts with a thin ember edge; the hero rises under it. */
+.loader { display: none; }
+html.is-loading .loader, .loader.is-lifting {
+  position: fixed; inset: 0; z-index: var(--z-loader);
+  display: grid; place-items: center;
+  background: #000;
+}
+.loader.is-lifting { transform: translateY(-101%); transition: transform 1.05s cubic-bezier(0.76, 0, 0.24, 1) 0.12s; }
+.loader::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--ember-rgb), 0.9) 30%, rgba(255, 190, 150, 0.95) 50%, rgba(var(--ember-rgb), 0.9) 70%, transparent);
+  opacity: 0; transition: opacity 0.2s;
+}
+.loader.is-lifting::after { opacity: 1; }
+
+.loader__inner { display: grid; justify-items: center; gap: 18px; transition: opacity 0.35s var(--ease), transform 0.9s var(--ease); }
+.loader.is-lifting .loader__inner { opacity: 0; transform: translateY(-14px); }
+.loader__name {
+  font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: -0.03em; color: var(--text);
+  animation: loader-in 0.8s var(--ease) both;
+}
+.loader__track { display: flex; align-items: center; gap: 12px; animation: loader-in 0.8s var(--ease) 0.1s both; }
+.loader__bar { position: relative; width: 180px; height: 1px; background: var(--line-2); overflow: hidden; }
+.loader__bar i { position: absolute; inset: 0; background: var(--ember); transform-origin: left; transform: scaleX(0); }
+.loader__pct { min-width: 3ch; font: 11px/1 var(--font-mono); color: var(--text-3); text-align: right; font-variant-numeric: tabular-nums; }
+@keyframes loader-in { from { opacity: 0; transform: translateY(6px); } }
+
+/* Hold the hero's entrance until the curtain lifts, then let it play. */
+html.is-loading :is(.hero__status, .hero__name, .hero__lead, .hero__creds, .hero__ctas) { animation-play-state: paused; }
+.hero__arm { transition: opacity 1.4s var(--ease) 0.2s, transform 1.8s var(--ease) 0.2s; }
+html.is-loading .hero__arm { opacity: 0; transform: translateY(3%) scale(0.985); }

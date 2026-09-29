@@ -72,9 +72,10 @@ export async function mount(ctx) {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   } catch {
     section.classList.add('arm-failed');
+    ctx.emit('arm:loaded');
     return;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  const resolution = ctx.lib.adaptiveResolution(renderer);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.toneMappingExposure = 1.0;
@@ -90,7 +91,7 @@ export async function mount(ctx) {
   // ── lights: a soft white key, a gentle fill, and a single warm rim from behind ──
   const key = new THREE.DirectionalLight(0xfffaf4, 3.4);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(4096, 4096);
   key.shadow.camera.left = key.shadow.camera.bottom = -0.5;
   key.shadow.camera.right = key.shadow.camera.top = 0.5;
   key.shadow.camera.near = 0.1; key.shadow.camera.far = 4;
@@ -106,7 +107,7 @@ export async function mount(ctx) {
   scene.add(makeFloorPool(), catcher);
 
   // ── load the arm ──
-  const rig = await loadRobot();
+  const rig = await loadRobot((f) => ctx.emit('arm:progress', f));
   scene.add(rig.root);
   setQ(rig, [0, 0, 0, 0, 0, 0]);
   rig.root.updateMatrixWorld(true);
@@ -239,6 +240,7 @@ export async function mount(ctx) {
     raf = requestAnimationFrame(tick);
     const dt = Math.min(0.05, (now - (last || now)) / 1000);
     last = now;
+    resolution.sample(dt);
     if (!t0) t0 = now;
     const t = (now - t0) / 1000;
 
@@ -266,17 +268,20 @@ export async function mount(ctx) {
     if (t > 1.6 && !ready) { ready = true; section.classList.add('arm-ready'); }
   }
 
-  const start = () => { if (!raf && visible && !document.hidden && !still) { last = 0; raf = requestAnimationFrame(tick); } };
+  // The unfold waits for the loading screen to lift, so it plays in view instead of behind it.
+  let released = false;
+  const start = () => { if (released && !raf && visible && !document.hidden && !still) { last = 0; raf = requestAnimationFrame(tick); } };
   const stop = () => { cancelAnimationFrame(raf); raf = 0; };
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) start(); else { stop(); tcpOut.visible = false; } }, { threshold: 0 }).observe(section);
   document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
 
   section.classList.add('arm-loaded');
+  ctx.emit('arm:loaded');
   if (ctx.reduced) {
     renderStill();
     section.classList.add('arm-ready');
     return;
   }
   renderer.render(scene, camera);
-  start();
+  ctx.loaded.then(() => { released = true; start(); });
 }

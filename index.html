@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>document.documentElement.classList.add('is-loading');
+    // Failsafe: if the scripts never boot, lift the loading screen anyway.
+    setTimeout(function () { var r = document.documentElement; if (r.classList.contains('is-loading')) { r.classList.remove('is-loading'); var l = document.getElementById('loader'); if (l) l.remove(); } }, 12000);</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Vishal Naveen: robotics, ML and embedded software</title>
   <meta name="description" content="Vishal Naveen, electrical engineering at the University of Florida. Imitation-learning robot policies, on-device computer vision, and competition robotics code.">
@@ -62,6 +65,7 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/chrome.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/loader.css">
   <link rel="stylesheet" href="css/lab.css">
   <link rel="stylesheet" href="css/work.css">
   <link rel="stylesheet" href="css/sections.css">
@@ -75,6 +79,12 @@
   </script>
 </head>
 <body>
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <span class="loader__name">Vishal Naveen</span>
+      <span class="loader__track"><span class="loader__bar"><i></i></span><span class="loader__pct">0</span></span>
+    </div>
+  </div>
   <a class="skip-link" href="#lab">Skip to the work</a>
 
   <header class="nav" id="nav">

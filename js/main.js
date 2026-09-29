@@ -47,7 +47,7 @@ const ctx = {
 ctx.loaded = new Promise((resolve) => ctx.on('loader:done', resolve));
 window.__site = ctx;
 // Never let a stuck preloader hold the hero hostage.
-setTimeout(() => ctx.emit('loader:done'), 4500);
+setTimeout(() => ctx.emit('loader:done'), 11000);
 
 document.addEventListener('click', (e) => {
   const a = e.target.closest('a[href^="#"]');

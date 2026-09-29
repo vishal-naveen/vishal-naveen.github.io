@@ -1,6 +1,7 @@
 // The WebGL scene: studio lighting, the board, hover physics and the travelling pulse.
 // createBoardScene() returns a small controller; the DOM side (pcb.js) never touches three.js.
 import * as THREE from 'three';
+import { adaptiveResolution } from '../../lib.js';
 import { buildLayout } from './layout.js';
 import { makeMaterials } from './materials.js';
 import { silkTexture, grainTexture, fadeTexture, glowTexture } from './textures.js';
@@ -36,8 +37,7 @@ export async function createBoardScene(host, opts) {
   const L = buildLayout();
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   if (!renderer.getContext()) throw new Error('no webgl');
-  const dprCap = 1.75;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, dprCap));
+  const res = adaptiveResolution(renderer);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.02;
   renderer.shadowMap.enabled = true;
@@ -50,7 +50,8 @@ export async function createBoardScene(host, opts) {
   canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); onLost(); });
 
   const small = Math.min(window.innerWidth, window.innerHeight) < 700;
-  const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  const aniso = renderer.capabilities.getMaxAnisotropy();
+  const maxTex = renderer.capabilities.maxTextureSize;
   const scene = new THREE.Scene();
   const env = studioEnvironment(renderer);
   scene.environment = env;
@@ -61,7 +62,7 @@ export async function createBoardScene(host, opts) {
   const key = new THREE.DirectionalLight(0xfff0e0, 3.1);
   key.position.set(-95, 200, 120);
   key.castShadow = true;
-  key.shadow.mapSize.set(small ? 1024 : 2048, small ? 1024 : 2048);
+  key.shadow.mapSize.set(small ? 2048 : 4096, small ? 2048 : 4096);
   Object.assign(key.shadow.camera, { left: -125, right: 125, top: 100, bottom: -100, near: 60, far: 520 });
   key.shadow.bias = -0.0004; key.shadow.normalBias = 0.12;
   const rim = new THREE.DirectionalLight(0xffa470, 0.9);
@@ -79,7 +80,7 @@ export async function createBoardScene(host, opts) {
   const board = new THREE.Group();
   rig.add(yawG); yawG.add(board); scene.add(rig); board.add(glow);
 
-  const silkTex = silkTexture(L, { ppm: small ? 9 : 12 }); silkTex.anisotropy = aniso;
+  const silkTex = silkTexture(L, { ppm: Math.min(22, Math.floor(maxTex / (L.board.w + 8))) }); silkTex.anisotropy = aniso;
   board.add(buildSlab(L, M), buildSilk(L, M, silkTex));
   const traces = buildTraces(L, M);
   traces.items.forEach((t) => board.add(t.mesh));
@@ -88,14 +89,14 @@ export async function createBoardScene(host, opts) {
   board.add(passives.group, buildUsb(L, M));
 
   let rot = 0;                            // text rotation that keeps chip names upright on screen
-  const ppm = small ? 26 : 34;
+  const ppm = 52;
   const chips = L.chips.map((rec) => {
     const built = buildChip(rec, M, rot, ppm);
     built.tex.anisotropy = aniso;
     board.add(built.group);
     return { rec, ...built };
   });
-  const mcu = buildMcu(L.mcu, M, rot, small ? 26 : 34);
+  const mcu = buildMcu(L.mcu, M, rot, 52);
   mcu.tex.anisotropy = aniso;
   board.add(mcu.group);
 
@@ -164,7 +165,7 @@ export async function createBoardScene(host, opts) {
       c.mats.forEach((m) => { m.map.dispose(); m.map = t; m.emissiveMap = t; m.needsUpdate = true; });
       c.tex = t;
     });
-    const mt = makeMcuTexture(L.mcu, rot, small ? 26 : 34); mt.anisotropy = aniso;
+    const mt = makeMcuTexture(L.mcu, rot, 52); mt.anisotropy = aniso;
     mcu.mats.forEach((m) => { m.map.dispose(); m.map = mt; m.emissiveMap = mt; m.needsUpdate = true; });
   };
   const applyOrientation = () => {
@@ -305,6 +306,7 @@ export async function createBoardScene(host, opts) {
     const dt = Math.min(0.05, last ? t - last : 0.016); last = t;
     update(dt, t);
     renderer.render(scene, camera);
+    res.sample(dt);
     raf = requestAnimationFrame(frame);
   };
   const renderStill = () => {

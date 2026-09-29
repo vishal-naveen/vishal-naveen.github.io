@@ -68,3 +68,26 @@ export function enableSpotlight() {
     card.style.setProperty('--my', `${e.clientY - r.top}px`);
   }, { passive: true });
 }
+
+// Render resolution for the WebGL scenes: supersample past the screen's own density (1.5x, capped at 3x)
+// for print-sharp edges and labels, then step down only if this device can't hold ~40 fps.
+// Call sample(dtSeconds) once per rendered frame.
+export function adaptiveResolution(renderer) {
+  const dpr = window.devicePixelRatio || 1;
+  const floor = Math.min(dpr, 2);
+  let ratio = Math.min(3, Math.max(2, dpr) * 1.5);
+  renderer.setPixelRatio(ratio);
+  const times = [];
+  let n = 0;
+  return {
+    get ratio() { return ratio; },
+    sample(dt) {
+      if (++n < 30 || ratio <= floor || !(dt > 0)) return; // skip warm-up (shader compiles, first uploads)
+      times.push(dt);
+      if (times.length < 45) return;
+      const median = times.sort((a, b) => a - b)[times.length >> 1];
+      times.length = 0;
+      if (median > 0.024) { ratio = Math.max(floor, ratio * 0.75); renderer.setPixelRatio(ratio); }
+    },
+  };
+}
