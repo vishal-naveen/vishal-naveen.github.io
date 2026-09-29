@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vishal Naveen: robotics, ML and embedded software</title>
+  <meta name="description" content="Vishal Naveen, electrical engineering at the University of Florida. Imitation-learning robot policies, on-device computer vision, and competition robotics code.">
+  <meta name="theme-color" content="#000000">
+  <!-- SEO -->
+  <link rel="canonical" href="https://vishal-naveen.github.io/">
+  <meta name="author" content="Vishal Naveen">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vishal Naveen">
+  <meta property="og:title" content="Vishal Naveen: robotics, ML and embedded software">
+  <meta property="og:description" content="Electrical engineering student at the University of Florida building robots that learn: imitation-learning policies on sub-$300 hardware, on-device computer vision, and competition robotics code.">
+  <meta property="og:url" content="https://vishal-naveen.github.io/">
+  <meta property="og:image" content="https://vishal-naveen.github.io/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vishal Naveen — Electrical Engineering at UF. Robotics, ML, Embedded.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Vishal Naveen: robotics, ML and embedded software">
+  <meta name="twitter:description" content="Electrical engineering student at the University of Florida building robots that learn: imitation-learning policies on sub-$300 hardware, on-device computer vision, and competition robotics code.">
+  <meta name="twitter:image" content="https://vishal-naveen.github.io/assets/og.png">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Vishal Naveen",
+  "url": "https://vishal-naveen.github.io/",
+  "image": "https://vishal-naveen.github.io/assets/og.png",
+  "email": "mailto:vishalnaveen@ufl.edu",
+  "jobTitle": "Electrical Engineering student",
+  "description": "Electrical engineering student at the University of Florida building robots that learn: imitation-learning policies on sub-$300 hardware, on-device computer vision, and competition robotics code.",
+  "alumniOf": {
+    "@type": "CollegeOrUniversity",
+    "name": "University of Florida"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Gainesville",
+    "addressRegion": "FL",
+    "addressCountry": "US"
+  },
+  "sameAs": [
+    "https://github.com/vishal-naveen",
+    "https://www.linkedin.com/in/vishalnaveen/"
+  ],
+  "knowsAbout": [
+    "Robotics",
+    "Machine Learning",
+    "Embedded Systems",
+    "Software"
+  ]
+}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wdth,wght@0,75..125,300..800;1,100,400&family=JetBrains+Mono:wght@400..600&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/chrome.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/lab.css">
+  <link rel="stylesheet" href="css/work.css">
+  <link rel="stylesheet" href="css/sections.css">
+  <link rel="stylesheet" href="css/palette.css">
+  <link rel="stylesheet" href="css/pcb.css">
+  <script type="importmap">
+  { "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  } }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#lab">Skip to the work</a>
+
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#top" aria-label="Vishal Naveen, back to top">Vishal Naveen</a>
+    <nav class="nav__links" aria-label="Primary">
+      <a class="nav__link" href="#stack" data-sections="stack">Stack</a>
+      <a class="nav__link" href="#lab" data-sections="lab work">Work</a>
+      <a class="nav__link" href="#experience" data-sections="experience leadership">Experience</a>
+      <a class="nav__link" href="#contact" data-sections="contact">Contact</a>
+    </nav>
+    <div class="nav__actions">
+      <button class="nav__kbd" type="button" data-palette aria-label="Open command menu"><kbd>&#8984;</kbd><kbd>K</kbd></button>
+      <a class="btn btn--sm nav__cta" href="assets/Vishal_Naveen_Resume.pdf" target="_blank" rel="noopener">R&eacute;sum&eacute;</a>
+      <button class="nav__menu" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero: left column of text, the SO-101 (WebGL, live IK) stands in .hero__stage on the right. -->
+    <section class="hero" id="top" aria-label="Introduction">
+      <div class="hero__inner">
+        <p class="hero__status"><i class="hero__dot" aria-hidden="true"></i>Open to research &amp; internships</p>
+        <h1 class="hero__name" aria-label="Vishal Naveen"><span class="hero__word">Vishal</span><span class="hero__word">Naveen</span></h1>
+        <div class="hero__stage" aria-hidden="true"><p class="hero__cap" id="hero-hud"></p></div>
+        <div class="hero__intro">
+          <p class="hero__lead">I build robots that learn, from the servo bus up to the policy.</p>
+          <ul class="hero__creds" aria-label="At a glance">
+            <li><span>Electrical Engineering</span><span>University of Florida, Honors Program</span></li>
+            <li><span>Robot learning research</span><span>TactileVLA-Edge</span></li>
+            <li><span>Team captain &amp; lead programmer</span><span>Middleton Robotics</span></li>
+          </ul>
+          <div class="hero__ctas">
+            <a class="btn btn--hot" href="assets/Vishal_Naveen_Resume.pdf" target="_blank" rel="noopener">R&eacute;sum&eacute;</a>
+            <a class="btn" href="mailto:vishalnaveen@ufl.edu">Get in touch</a>
+            <span class="hero__icons">
+              <a class="icon-btn" href="https://github.com/vishal-naveen" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg></a>
+              <a class="icon-btn" href="https://www.linkedin.com/in/vishalnaveen/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
+              <a class="icon-btn" href="mailto:vishalnaveen@ufl.edu" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="m3.5 7 8.5 6.2L20.5 7"/></svg></a>
+            </span>
+          </div>
+        </div>
+      </div>
+      <canvas class="hero__arm" aria-hidden="true"></canvas>
+    </section>
+
+    <section class="section" id="stack" aria-labelledby="stack-title"></section>
+    <section class="section lab" id="lab" aria-labelledby="lab-title"></section>
+    <section class="section work" id="work" aria-label="More projects"></section>
+    <section class="section" id="experience" aria-labelledby="experience-title"></section>
+    <section class="section" id="leadership" aria-labelledby="leadership-title"></section>
+  </main>
+
+  <footer class="section" id="contact" aria-labelledby="contact-title"></footer>
+
+  <div id="modal-root"></div>
+  <div id="palette-root"></div>
+
+  <noscript>
+  <div style="position:fixed;inset:0;z-index:2000;overflow:auto;background:#000;color:#f7f1ec;font:16px/1.6 'Mona Sans',system-ui,sans-serif;padding:32px 16px">
+    <div style="max-width:760px;margin:0 auto">
+      <h1 style="font-size:clamp(40px,10vw,84px);line-height:.98;margin:0 0 12px;font-weight:600;letter-spacing:-.04em">Vishal Naveen</h1>
+      <p style="font-size:20px;margin:0 0 8px;color:#ff7a1f">Electrical Engineering @ University of Florida</p>
+      <p style="margin:0 0 8px">I build robots that learn — and the software that makes them work.</p>
+      <p style="margin:0 0 8px;color:#b9aba2">Gainesville, FL &middot; Open to research &amp; internship opportunities</p>
+      <p style="margin:0">
+        <a href="mailto:vishalnaveen@ufl.edu" style="color:#ff7a1f">vishalnaveen@ufl.edu</a> &middot;
+        <a href="https://github.com/vishal-naveen" style="color:#ff7a1f">GitHub</a> &middot;
+        <a href="https://www.linkedin.com/in/vishalnaveen/" style="color:#ff7a1f">LinkedIn</a> &middot;
+        <a href="assets/Vishal_Naveen_Resume.pdf" style="color:#ff7a1f">Resume (PDF)</a>
+      </p>
+      <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#ff7a1f;margin:32px 0 12px;font-family:ui-monospace,Menlo,monospace;font-weight:500">About</h2>
+      <p style="margin:0">I'm an electrical engineering student at the University of Florida who builds robots that learn. I train manipulation policies on sub-$300 hardware, ship computer vision to phones, and write the autonomous code that took my team to its first state title in seven years.</p>
+      <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#ff7a1f;margin:32px 0 12px;font-family:ui-monospace,Menlo,monospace;font-weight:500">Projects</h2>
+      <ul style="margin:0;padding-left:20px">
+      <li style="margin:0 0 6px"><strong>TactileVLA-Edge</strong> &mdash; Imitation-learning policies for robot manipulation on a sub-$300 SO-101 arm — both generalize to a workspace cell they never saw in training.</li>
+      <li style="margin:0 0 6px"><strong>Sixth Sense</strong> &mdash; An iOS navigation aid for blind and low-vision users: on-device obstacle detection with distance estimated from a single camera, and AR-recorded routes.</li>
+      <li style="margin:0 0 6px"><strong>RL LDPC Decoding</strong> &mdash; A deep Q-network that decodes LDPC error-correcting codes by choosing bit flips — benchmarked against greedy bit-flipping and BP+LSD across 270 seeded trials.</li>
+      <li style="margin:0 0 6px"><strong>Midnight · DECODE</strong> &mdash; Competition robot code for the 2025–26 FTC season: a flywheel shooter with Limelight targeting and six autonomous routines. Innovate Award.</li>
+      <li style="margin:0 0 6px"><strong>Midnight · Into the Deep</strong> &mdash; Competition robot code for the 2024–25 FTC season: a five-specimen autonomous on Pedro Pathing and a 0.8-second intake-to-outtake transfer.</li>
+      </ul>
+      <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#ff7a1f;margin:32px 0 12px;font-family:ui-monospace,Menlo,monospace;font-weight:500">Experience</h2>
+      <ul style="margin:0;padding-left:20px">
+      <li style="margin:0 0 6px"><strong>Algorithm Developer &amp; Beta Tester</strong>, Pedro Pathing (Jun 2025 — Jan 2026)</li>
+      <li style="margin:0 0 6px"><strong>Student Researcher</strong>, University of South Florida (Dec 2024 — Jan 2026)</li>
+      <li style="margin:0 0 6px"><strong>Software Developer</strong>, Inc to Inc (Jun 2023 — Jul 2025)</li>
+      </ul>
+      <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#ff7a1f;margin:32px 0 12px;font-family:ui-monospace,Menlo,monospace;font-weight:500">Leadership</h2>
+      <p style="margin:0"><strong>FTC Team Captain &amp; Lead Programmer</strong>, Middleton Robotics (Aug 2023 — May 2026). Led a 15-member team to its first state title in 7 years and programmed a world-record-tying 105-point autonomous routine.</p>
+      <h2 style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#ff7a1f;margin:32px 0 12px;font-family:ui-monospace,Menlo,monospace;font-weight:500">Education</h2>
+      <p style="margin:0">B.S. Electrical Engineering, University of Florida &mdash; May 2029. Minor in Computer Science.</p>
+      <p style="margin:32px 0 0;color:#b9aba2;font-size:14px">This site uses JavaScript for its animated experience; the essentials are above.</p>
+    </div>
+  </div>
+</noscript>
+
+  <script>window.Prism = window.Prism || {}; window.Prism.manual = true;</script>
+  <script src="vendor/prism/prism-core.min.js"></script>
+  <script src="vendor/prism/prism-clike.min.js"></script>
+  <script src="vendor/prism/prism-javascript.min.js"></script>
+  <script src="vendor/prism/prism-typescript.min.js"></script>
+  <script src="vendor/prism/prism-bash.min.js"></script>
+  <script src="vendor/prism/prism-python.min.js"></script>
+  <script src="vendor/prism/prism-swift.min.js"></script>
+  <script src="vendor/prism/prism-java.min.js"></script>
+  <script src="vendor/prism/prism-diff.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

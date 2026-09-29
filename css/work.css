@@ -1,0 +1,161 @@
+/* #work: the other four projects as a calm 2x2 grid. Prefixes: wk- (cards), fld/fa/fp (field sims),
+   tg (Tanner graph), ldpc (chart), ph (phones). The case-study overlay (cs-) is in work-case.css. */
+@import url('work-case.css');
+
+.work { position: relative; padding-top: 0; padding-bottom: clamp(56px, 6vw, 88px); }
+.wk-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 22px); }
+.wk-more { margin-top: clamp(24px, 3vw, 40px); color: var(--text-3); font-size: var(--fs-small); }
+.wk-more .link { color: var(--text-2); }
+
+/* ── Card ─────────────────────────────────────────────── */
+.wk { display: flex; flex-direction: column; cursor: pointer; }
+.wk-plate {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch;
+  height: clamp(200px, 17vw, 236px); overflow: hidden;
+  background: #060606; border-bottom: 1px solid var(--line); cursor: default;
+}
+.wk--decode .wk-plate, .wk--intothedeep .wk-plate { grid-template-columns: auto minmax(0, 1fr); }
+.wk__body { display: flex; flex: 1; flex-direction: column; gap: 10px; padding: 20px 22px 22px; }
+.wk__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.wk__title { font-size: clamp(20px, 1.8vw, 24px); font-weight: 600; line-height: 1.2; letter-spacing: -0.03em; }
+.wk__pre { margin-right: 0; font-weight: 500; color: var(--text-3); }
+.wk__period { flex: none; font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); }
+.wk__sum {
+  color: var(--text-2); font-size: 14.5px; line-height: 1.55;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+}
+.wk__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px; margin-top: auto; padding-top: 10px; }
+.wk__metric { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.wk__metric b { font-size: 26px; font-weight: 600; line-height: 1; letter-spacing: -0.035em; }
+.wk__metric span { color: var(--text-3); font-size: 12.5px; line-height: 1.3; max-width: 22ch; }
+.wk__actions { display: flex; align-items: center; gap: 8px 18px; }
+.wk__actions .link { font-size: 14px; color: var(--text-2); }
+.wk-tag { display: inline-flex; align-items: center; height: 18px; padding: 0 7px; margin-left: 8px; border-radius: 999px; border: 1px solid var(--line-3); color: var(--text-2); font-size: 10.5px; font-weight: 600; vertical-align: 2px; }
+.wk-tag--lg { height: 24px; padding: 0 11px; margin: 0 12px 0 0; font-size: 12.5px; vertical-align: middle; }
+
+/* Field sims + code preview */
+.wk-plate__fld { position: relative; aspect-ratio: 1; height: 100%; min-width: 0; }
+.wk-code {
+  position: relative; min-width: 0; overflow: hidden; border-left: 1px solid var(--line); pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 72%, transparent), linear-gradient(#000 80%, transparent);
+  mask-image: linear-gradient(90deg, #000 72%, transparent), linear-gradient(#000 80%, transparent);
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+}
+.wk-code .code { position: absolute; inset: 0; border: 0; border-radius: 0; background: transparent; }
+.wk-code .code__head, .wk-code .code__no { display: none; }
+.wk-code .code__line { grid-template-columns: 1fr; padding-left: 16px; }
+.wk-code .code__body { overflow: hidden; padding-top: 16px; font-size: 11.5px; }
+.wk-code .code__body > code { display: block; transition: transform 3.2s var(--ease); }
+.wk:hover .wk-code .code__body > code { transform: translateY(-48px); }
+
+/* ── Field illustrations ──────────────────────────────── */
+.fld-wrap { position: relative; width: 100%; height: 100%; }
+.fld { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+.fld-bg { fill: #060606; stroke: var(--line-2); stroke-width: 0.5; }
+.fld-tiles { fill: none; stroke: rgba(255, 240, 230, 0.07); stroke-width: 0.35; }
+.fld-read { position: absolute; left: 12px; top: 10px; display: grid; gap: 0; font-family: var(--font-mono); pointer-events: none; }
+.fld-read span { font-size: 10.5px; color: var(--text-3); }
+.fld-read b { font-size: 20px; font-weight: 500; line-height: 1.15; color: var(--text); font-variant-numeric: tabular-nums; }
+.fld-note { position: absolute; left: 12px; right: 12px; bottom: 8px; font-size: 10.5px; line-height: 1.35; color: var(--text-3); pointer-events: none; }
+
+.fa-ring { fill: none; stroke: rgba(255, 240, 230, 0.35); stroke-width: 0.8; }
+.fa-core { fill: var(--heat-4); opacity: 0.85; }
+.fa-pulse { fill: none; stroke: var(--heat-5); stroke-width: 0.8; opacity: 0; }
+.fa-glow { stroke-width: 2.2; stroke-linecap: round; opacity: 0.22; }
+.fa-beam { stroke-width: 0.6; stroke-dasharray: 2.4 2.4; animation: fa-flow 0.9s linear infinite; }
+@keyframes fa-flow { to { stroke-dashoffset: -4.8; } }
+.fa-shot { fill: var(--heat-6); opacity: 0; }
+.fa-body { fill: #141210; stroke: rgba(255, 240, 230, 0.5); stroke-width: 0.7; }
+.fa-front { fill: none; stroke: var(--text); stroke-width: 1.3; stroke-linecap: round; }
+.fa-wheel circle { fill: none; stroke: rgba(255, 240, 230, 0.45); stroke-width: 0.6; }
+.fa-wheel path { stroke: rgba(255, 240, 230, 0.45); stroke-width: 0.6; }
+[data-fld='aim'] .fld { cursor: crosshair; }
+
+.fp-guides { fill: none; stroke: rgba(255, 240, 230, 0.12); stroke-width: 0.4; stroke-dasharray: 1 1.4; }
+.fp-path { fill: none; stroke: rgba(255, 240, 230, 0.26); stroke-width: 0.6; stroke-dasharray: 1.6 1.6; }
+.fp-trail { fill: none; stroke: var(--heat-5); stroke-width: 1.2; stroke-linecap: round; }
+.fp-trail-glow { fill: none; stroke: var(--heat-3); stroke-width: 3; stroke-linecap: round; opacity: 0.28; }
+.fp-end { fill: #060606; stroke: rgba(255, 240, 230, 0.4); stroke-width: 0.6; }
+.fp-hit { fill: transparent; }
+.fp-dot { fill: #060606; stroke: rgba(255, 240, 230, 0.7); stroke-width: 0.7; transition: r 0.2s, fill 0.2s; }
+.fp-handle:hover .fp-dot, .fp-handle.is-on .fp-dot { r: 2.8; fill: var(--heat-4); stroke: var(--heat-4); }
+.fp-bot rect { fill: #141210; stroke: rgba(255, 240, 230, 0.5); stroke-width: 0.7; }
+.fp-bot path { fill: none; stroke: var(--text); stroke-width: 1.3; stroke-linecap: round; }
+.is-near .fld--path { cursor: grab; }
+.is-dragging .fld--path { cursor: grabbing; }
+
+/* ── RL LDPC: the Tanner graph plate ──────────────────── */
+.tg { position: relative; display: grid; align-content: center; justify-items: center; gap: 6px; padding: 12px 18px 10px; }
+.tg-svg { display: block; width: 100%; height: auto; max-height: 150px; overflow: visible; }
+.tg-lbl { fill: var(--text-3); font-family: var(--font-mono); font-size: 11.5px; }
+.tg-edge { stroke: rgba(255, 240, 230, 0.13); stroke-width: 1; transition: stroke 0.3s; }
+.tg-edge.is-warm { stroke: rgba(255, 240, 230, 0.3); }
+.tg-edge.is-hover { stroke: rgba(255, 240, 230, 0.5); }
+.tg-edge.is-hot { stroke: var(--heat-4); stroke-width: 1.5; stroke-dasharray: 5 4; animation: tg-flow 0.7s linear infinite; }
+@keyframes tg-flow { to { stroke-dashoffset: -9; } }
+.tg-var { cursor: pointer; }
+.tg-hit { fill: transparent; }
+.tg-node { fill: #0a0908; stroke: rgba(255, 240, 230, 0.5); stroke-width: 1.3; transition: fill 0.3s, stroke 0.3s; }
+.tg-var:hover .tg-node { stroke: var(--text); }
+.tg-var.is-err .tg-node { fill: var(--heat-4); stroke: var(--heat-5); }
+.tg-check { fill: #0a0908; stroke: rgba(255, 240, 230, 0.5); stroke-width: 1.3; transition: fill 0.3s, stroke 0.3s; }
+.tg-check.is-unsat { fill: var(--heat-2); stroke: var(--heat-3); }
+.tg-read { display: flex; align-items: baseline; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+.tg-read b { font-size: 14px; font-weight: 500; color: var(--text); }
+.tg-note { font-size: 10.5px; line-height: 1.4; color: var(--text-3); text-align: center; }
+
+.ldpc-chart { display: grid; gap: 22px; margin: 0; }
+.ldpc-grp { display: grid; gap: 9px; }
+.ldpc-grp__h { font-size: 14px; font-weight: 650; color: var(--text); }
+.ldpc-row { display: grid; grid-template-columns: minmax(0, 9.6em) minmax(0, 1fr) 4em; align-items: center; gap: 12px; font-size: 13.5px; }
+.ldpc-row__k { overflow: hidden; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
+.ldpc-row__bar { position: relative; height: 10px; border-radius: 3px; background: rgba(255, 240, 230, 0.07); }
+.ldpc-row__bar i {
+  position: absolute; inset: 0; border-radius: 3px; background: var(--heat-4);
+  clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) var(--d, 0s);
+}
+.ldpc-chart.is-in .ldpc-row__bar i { clip-path: inset(0 calc(100% - var(--v) * 1%) 0 0); }
+.ldpc-row__v { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--text); }
+.ldpc-chart figcaption { font-size: 12.5px; line-height: 1.45; color: var(--text-3); }
+.cs-native .ldpc-chart { max-width: 720px; }
+
+/* ── Sixth Sense: a small fan of phones ───────────────── */
+.wk--sixthsense .wk-plate { background: #060606; }
+.ph { --px: 0; --py: 0; --sp: 0.85; position: absolute; inset: 0; perspective: 1200px; perspective-origin: 50% 20%; }
+.ph-floor { display: none; }
+.ph-fan { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(calc(var(--py) * -4deg)) rotateY(calc(var(--px) * 9deg)); }
+.ph-unit {
+  position: absolute; left: 50%; bottom: 9%; width: 90px; aspect-ratio: 443 / 960; margin: 0; translate: -50% 0;
+  transform-origin: 50% 135%; transform-style: preserve-3d;
+  transform: translateZ(calc(var(--z, 0) * 1px)) rotate(calc(var(--i) * 11deg * var(--sp)));
+}
+.ph-body {
+  position: absolute; inset: 0; padding: 3px; border-radius: 16px;
+  background: #1c1a19;
+  box-shadow: 0 18px 30px -12px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(255, 240, 230, 0.16);
+}
+.ph-body img { width: 100%; height: 100%; object-fit: cover; border-radius: 13px; }
+.ph-glare { display: none; }
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 900px) {
+  .wk-grid { grid-template-columns: minmax(0, 1fr); }
+  .wk-plate { height: 220px; }
+}
+@media (max-width: 520px) {
+  .wk--decode .wk-plate, .wk--intothedeep .wk-plate { grid-template-columns: minmax(0, 1fr); height: 300px; }
+  .wk-plate__fld { aspect-ratio: auto; height: 100%; }
+  .wk-code { display: none; }
+  .wk__body { padding: 18px; }
+  .ldpc-row { grid-template-columns: minmax(0, 1fr) 3.8em; grid-template-areas: 'k v' 'bar bar'; gap: 5px 8px; font-size: 13px; }
+  .ldpc-row__k { grid-area: k; white-space: normal; }
+  .ldpc-row__v { grid-area: v; }
+  .ldpc-row__bar { grid-area: bar; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fa-beam, .tg-edge.is-hot { animation: none; }
+  .wk-code .code__body > code { transition: none; }
+  .wk:hover .wk-code .code__body > code { transform: none; }
+  .ldpc-row__bar i { transition: none; }
+}

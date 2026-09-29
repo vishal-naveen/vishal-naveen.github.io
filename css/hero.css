@@ -1,0 +1,134 @@
+/* Hero (v5, calm). Left: status pill, name, lead, credentials, buttons. Right: the SO-101 in a WebGL canvas
+   that covers the whole hero; the name sits behind the canvas so the arm can overlap the tail of "Naveen".
+   Layers: name 1 → arm canvas 2 → text UI 3. .hero__stage is a layout slot the arm scene reads, nothing more. */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg);
+}
+.hero__inner {
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  min-height: inherit;
+  padding: clamp(92px, 13svh, 128px) var(--gutter) clamp(36px, 6svh, 64px);
+  width: 100%; max-width: var(--max); margin-inline: auto;
+}
+
+/* Status pill: the one lit dot */
+.hero__status {
+  position: relative; z-index: 3;
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 32px; padding: 0 14px 0 12px; margin-bottom: clamp(18px, 3svh, 28px);
+  border: 1px solid var(--line-2); border-radius: 999px;
+  color: var(--text-2); font-size: 13.5px; font-weight: 500;
+}
+.hero__dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--ember); }
+
+/* The name: plain Mona Sans, crisp off-white. forge.js only warms letters under the cursor. */
+.hero__name {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: flex-start;
+  margin: 0;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(64px, min(10.5vw, 17svh), 176px);
+  line-height: 0.92; letter-spacing: -0.048em;
+  color: var(--text);
+  user-select: none;
+}
+.hero__word { display: block; }
+.hero__l { color: color-mix(in srgb, var(--heat-4) calc(var(--w, 0) * 100%), var(--text)); }
+
+/* The arm canvas covers the hero; it never takes pointer events. */
+.hero__arm {
+  position: absolute; inset: 0; z-index: 2;
+  width: 100%; height: 100%; display: block;
+  pointer-events: none;
+}
+/* Layout slot for the arm (desktop: the right ~two thirds; mobile: a band between name and text). */
+.hero__stage { position: absolute; top: 0; bottom: 0; left: 30%; right: 0; pointer-events: none; z-index: 2; }
+
+/* One quiet caption under the arm's base (position set from JS via --base-x / --base-y) */
+.hero__cap {
+  position: absolute; left: var(--base-x, 50%); top: var(--base-y, 88%);
+  display: grid; gap: 3px; justify-items: center; translate: -50% 18px;
+  font-family: var(--font-mono); font-size: 11px; line-height: 1.4; white-space: nowrap;
+  color: var(--text-3); opacity: 0; transition: opacity 1s var(--ease) 0.8s;
+}
+.arm-ready .hero__cap { opacity: 0.85; }
+.hero__cap:empty, .arm-failed .hero__cap { display: none; }
+.cap__title { color: var(--text-2); }
+.cap__vals { font-variant-numeric: tabular-nums; }
+
+.hero__intro { position: relative; z-index: 3; max-width: 35rem; width: 100%; }
+.hero__lead {
+  margin-top: clamp(20px, 3.4svh, 34px);
+  max-width: 22em;
+  font-size: clamp(21px, 1.95vw, 27px); line-height: 1.22; letter-spacing: -0.024em; font-weight: 500;
+  color: var(--text);
+  text-wrap: balance;
+}
+.hero__creds { margin: clamp(20px, 3.4svh, 32px) 0; border-top: 1px solid var(--line); }
+.hero__creds li {
+  display: grid; grid-template-columns: minmax(0, 16.2em) minmax(0, 1fr); gap: 2px 16px;
+  padding: 11px 0; border-bottom: 1px solid var(--line);
+  font-size: 15px; line-height: 1.4;
+}
+.hero__creds li span:first-child { color: var(--text); font-weight: 550; }
+.hero__creds li span:last-child { color: var(--text-2); }
+.hero__ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.hero__icons { display: inline-flex; gap: 8px; margin-left: 4px; }
+.icon-btn {
+  display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%;
+  border: 1px solid var(--line-2); color: var(--text-2);
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.icon-btn svg { width: 18px; height: 18px; }
+.icon-btn:hover { color: var(--text); border-color: var(--line-3); background: rgba(255, 240, 230, 0.04); }
+
+/* One entrance, once: the text column settles in, top to bottom. */
+@keyframes hero-in { from { opacity: 0; transform: translateY(12px); } }
+.hero__status, .hero__name, .hero__lead, .hero__creds, .hero__ctas { animation: hero-in 0.9s var(--ease) both; }
+.hero__name { animation-delay: 0.08s; }
+.hero__lead { animation-delay: 0.2s; }
+.hero__creds { animation-delay: 0.3s; }
+.hero__ctas { animation-delay: 0.4s; }
+
+/* Short laptops: tighten the column so the buttons stay in the first screen */
+@media (min-width: 901px) and (max-height: 820px) {
+  .hero__creds li { padding-block: 8px; }
+  .hero__lead { font-size: 21px; }
+}
+
+@media (max-width: 1360px) { .cap__j:nth-child(n+5) { display: none; } }
+
+/* Narrow desktops and landscape tablets: a slimmer text column so the arm has room */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .hero__stage { left: 40%; }
+  .hero__intro { max-width: 25rem; }
+  .hero__creds li { grid-template-columns: 1fr; padding: 9px 0; }
+}
+
+/* Portrait tablets and phones: name, then the arm, then the rest */
+@media (max-width: 900px) {
+  .hero__inner { justify-content: flex-start; padding-top: 88px; padding-bottom: 40px; }
+  .hero__name { font-size: min(24vw, 112px); }
+  .hero__stage {
+    position: relative; left: auto; right: auto; top: auto; bottom: auto;
+    align-self: stretch; height: clamp(300px, 46svh, 460px);
+    margin-inline: calc(var(--gutter) * -1);
+  }
+  .hero__lead { margin-top: 0; }
+  .hero__icons { margin-left: 0; }
+  .hero__cap { font-size: 10px; }
+}
+@media (max-width: 560px) {
+  .hero__stage { height: clamp(300px, 52svh, 460px); }
+  .hero__creds li { grid-template-columns: 1fr; padding: 10px 0; }
+  .cap__j:nth-child(n+5) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__status, .hero__name, .hero__lead, .hero__creds, .hero__ctas { animation: none; }
+  .hero__cap { transition: none; }
+}

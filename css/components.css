@@ -1,0 +1,154 @@
+/* Shared components. Sections compose these; they don't restyle them.
+   Nav, loader and cursor styles live in chrome.css. */
+
+/* ── Buttons ──────────────────────────────────────────── */
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 46px; padding: 0 20px;
+  border-radius: 999px;
+  font-weight: 550; font-size: 15px; letter-spacing: -0.005em;
+  border: 1px solid var(--line-3);
+  color: var(--text);
+  background: rgba(255, 120, 70, 0.03);
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s, color 0.3s, transform 0.4s var(--ease);
+  white-space: nowrap;
+}
+.btn:hover { border-color: rgba(255, 240, 230, 0.45); background: rgba(255, 240, 230, 0.04); }
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Primary: a solid ember pill. No glow; it brightens a touch on hover. */
+.btn--hot { border: 0; color: #000; background: var(--heat-3); }
+.btn--hot:hover { background: #ff6d36; box-shadow: none; }
+.btn--sm { height: 40px; padding: 0 18px; font-size: 14px; }
+
+/* ── Sections ─────────────────────────────────────────── */
+.section { position: relative; padding-block: var(--section); }
+
+/* Section head: display title left, one-paragraph lead right, baselines meeting at the bottom. */
+.sec-head {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+  align-items: end; gap: 28px 56px;
+  margin-bottom: clamp(56px, 7vw, 104px);
+}
+.sec-head .lead { padding-bottom: 0.5em; }
+@media (max-width: 900px) { .sec-head { grid-template-columns: 1fr; } }
+
+/* Display type: Mona Sans, mixed case, confident but quiet. */
+.d1, .d2 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.045em; line-height: 0.98; }
+.d1 { font-size: var(--fs-d1); }
+.d2 { font-size: var(--fs-d2); letter-spacing: -0.035em; line-height: 1.05; }
+.h2 { font-size: var(--fs-h2); font-weight: 650; line-height: 1.06; letter-spacing: -0.03em; }
+.h3 { font-size: var(--fs-h3); font-weight: 650; line-height: 1.2; letter-spacing: -0.02em; }
+.lead { font-size: var(--fs-lead); line-height: 1.55; color: var(--text-2); max-width: 60ch; }
+.muted { color: var(--text-2); }
+
+/* v5: .hot is plain text now (kept so v4 markup still renders). */
+.hot { color: var(--text); }
+.ember { color: var(--heat-4); }
+
+/* Line-mask reveal for display titles: wrap each line in .line > span (lib.splitLines does it). */
+.lines > .line { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
+.lines > .line > span { display: block; transform: translateY(104%); transition: transform 1.1s var(--ease); }
+.lines.is-in > .line > span, .is-in .lines > .line > span { transform: none; }
+.lines.is-in > .line:nth-child(2) > span { transition-delay: 0.08s; }
+.lines.is-in > .line:nth-child(3) > span { transition-delay: 0.16s; }
+@media (prefers-reduced-motion: reduce) { .lines > .line > span { transform: none; } }
+
+/* ── Card: warm black, ember spotlight and hairline that heat under the pointer ── */
+.card {
+  --mx: 50%; --my: 50%;
+  position: relative;
+  border-radius: var(--radius-lg);
+  background: #0b0a09;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  isolation: isolate;
+  transition: border-color 0.35s, transform 0.6s var(--ease), background 0.35s;
+}
+.card::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(520px circle at var(--mx) var(--my), rgba(255, 240, 230, 0.045), transparent 60%);
+  opacity: 0; transition: opacity 0.4s;
+}
+.card::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: radial-gradient(320px circle at var(--mx) var(--my), rgba(255, 240, 230, 0.28), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity 0.4s;
+}
+.card:hover::before, .card:hover::after, .card:focus-within::after { opacity: 1; }
+.card:hover { border-color: var(--line-2); }
+
+/* ── Chips ────────────────────────────────────────────── */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex; align-items: center;
+  height: 28px; padding: 0 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font-mono); font-size: 12px;
+}
+
+/* ── Metric ───────────────────────────────────────────── */
+.metric { display: grid; gap: 6px; align-content: start; }
+.metric__value {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(34px, 3.4vw, 52px); line-height: 1; letter-spacing: -0.04em;
+  color: var(--text);
+  font-variant-numeric: normal;
+}
+.metric__label { color: var(--text-2); font-size: var(--fs-small); line-height: 1.4; }
+
+/* ── Links ────────────────────────────────────────────── */
+.link {
+  color: var(--text);
+  background: linear-gradient(90deg, var(--heat-3), var(--heat-5)) left bottom / 0% 1px no-repeat, linear-gradient(var(--line-3), var(--line-3)) left bottom / 100% 1px no-repeat;
+  transition: background-size 0.5s var(--ease), color 0.3s;
+  padding-bottom: 2px;
+}
+.link:hover { background-size: 100% 1px, 100% 1px; color: var(--text); }
+
+/* ── Code block (real excerpts) ───────────────────────── */
+.code {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: #080504;
+  overflow: hidden;
+  font-family: var(--font-mono);
+}
+.code__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 120, 70, 0.025);
+  font-size: 12px; color: var(--text-3);
+}
+.code__dots { display: flex; gap: 6px; }
+.code__dots i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 180, 140, 0.13); }
+.code__path { color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.code__gh { color: var(--heat-4); white-space: nowrap; }
+.code__gh:hover { color: var(--heat-6); }
+.code__body { overflow-x: auto; padding: 14px 0; font-size: 12.5px; line-height: 1.7; }
+.code__line { display: grid; grid-template-columns: 5ch 1fr; column-gap: 18px; padding-right: 20px; }
+.code__no { text-align: right; color: #4a3b35; user-select: none; }
+.code__src { white-space: pre; color: #e6d9d0; }
+
+/* Syntax, on the heat ramp: keywords ember, strings amber, numbers crimson-red, calls white-hot. */
+.token.comment, .token.prolog { color: #74625a; font-style: italic; }
+.token.keyword, .token.boolean, .token.important, .token.null, .token.nil { color: #ff7a45; }
+.token.string, .token.char, .token.attr-value, .token.template-string { color: #ffc27e; }
+.token.number, .token.constant { color: #ff5d4d; }
+.token.function, .token.class-name, .token.builtin, .token.annotation { color: #ffe4cc; }
+.token.operator, .token.punctuation { color: #8c7d74; }
+.token.property, .token.variable, .token.key { color: #e6d9d0; }
+.token.inserted, .token.inserted-sign { color: #ffc27e; }
+.token.deleted, .token.deleted-sign { color: #ff5d4d; }
+
+/* ── Reveal on scroll (JS adds .is-in). Quiet: most content just settles in. ── */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }

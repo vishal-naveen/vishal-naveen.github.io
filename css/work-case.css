@@ -1,0 +1,173 @@
+/* Case-study overlay for #work. Every class is prefixed cs-. Imported by work.css. */
+
+.cs { position: fixed; inset: 0; z-index: var(--z-modal); }
+.cs-backdrop {
+  position: absolute; inset: 0; opacity: 0; background: rgba(2, 1, 1, 0.72);
+  backdrop-filter: blur(20px) saturate(1.2); -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  transition: opacity 0.5s var(--ease);
+}
+.cs-panel {
+  position: absolute; inset: clamp(8px, 1.4vw, 18px) 0 0 0; overflow-y: auto; overscroll-behavior: contain; outline: none;
+  border-radius: 30px 30px 0 0; border: 1px solid var(--line-2); border-bottom: 0;
+  background: #050505;
+  box-shadow: 0 -40px 140px rgba(0, 0, 0, 0.7);
+  scrollbar-width: thin; scrollbar-color: rgba(255, 240, 230, 0.2) transparent;
+  opacity: 0; transform: translateY(9vh) scale(0.985); transform-origin: 50% 100%;
+  transition: opacity 0.42s var(--ease), transform 0.5s var(--ease);
+}
+.cs.is-open .cs-backdrop { opacity: 1; }
+.cs.is-open .cs-panel { opacity: 1; transform: none; }
+.cs.is-closing .cs-panel { transition-duration: 0.36s; }
+.cs-inner { position: relative; isolation: isolate; transition: opacity 0.24s var(--ease), transform 0.24s var(--ease); }
+.cs-inner::before {
+  content: none;
+}
+.cs-panel.is-swapping .cs-inner { opacity: 0; transform: translateY(14px); }
+
+/* Bar */
+.cs-bar { position: sticky; top: 0; z-index: 20; height: 66px; background: rgba(5, 5, 5, 0.86); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); }
+.cs-bar__in { position: relative; display: flex; align-items: center; gap: 14px; height: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
+.cs-bar__progress { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--ember); transform-origin: 0 50%; transform: scaleX(var(--cs-p, 0)); }
+.cs-back {
+  display: inline-flex; align-items: center; gap: 9px; height: 40px; padding: 0 16px 0 12px; border-radius: 999px;
+  border: 1px solid var(--line-2); background: transparent; color: var(--text-2); font-size: 14px; font-weight: 500;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+.cs-back svg { width: 15px; height: 15px; }
+.cs-back:hover { color: var(--text); border-color: var(--line-3); }
+.cs-bar__title {
+  flex: 1; min-width: 0; overflow: hidden; text-align: center; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+  opacity: 0; transform: translateY(6px); transition: opacity 0.3s, transform 0.4s var(--ease);
+}
+.cs-panel.is-scrolled .cs-bar__title { opacity: 1; transform: none; }
+.cs-bar__count { margin-left: auto; font-family: var(--font-mono); font-size: 13px; color: var(--text-2); }
+.cs-bar__count i { margin-inline: 2px; font-style: normal; color: var(--text-3); }
+.cs-bar__title + .cs-bar__count { margin-left: 0; }
+.cs-close {
+  display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 50%;
+  border: 1px solid var(--line-2); background: transparent; color: var(--text);
+  transition: background 0.25s, color 0.25s, transform 0.4s var(--ease), border-color 0.25s;
+}
+.cs-close svg { width: 15px; height: 15px; }
+.cs-close:hover { background: var(--text); border-color: transparent; color: #000; transform: rotate(90deg); }
+
+/* Hero */
+.cs-hero { display: grid; gap: clamp(18px, 2.4vw, 30px); justify-items: start; padding-top: clamp(36px, 7vw, 100px); }
+.cs-kicker { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; width: 100%; font-size: 15px; font-weight: 500; color: var(--text-2); }
+.cs-kicker .wk__period { margin-left: auto; }
+.cs-title { font-size: clamp(40px, 6.4vw, 92px); padding-bottom: 0.04em; overflow-wrap: anywhere; }
+.cs-summary { max-width: 46ch; font-size: clamp(19px, 2vw, 26px); line-height: 1.45; text-wrap: pretty; }
+
+.cs-metrics {
+  display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 1px; margin-top: clamp(34px, 5vw, 64px);
+  overflow: hidden; border: 1px solid var(--line-2); border-radius: var(--radius-lg); background: var(--line-2);
+}
+.cs-metrics .metric { gap: 10px; padding: clamp(20px, 2.6vw, 32px); background: #070707; }
+.cs-metrics .metric__value { font-size: clamp(34px, 4.4vw, 60px); }
+.cs-metrics .metric__label { font-size: 15px; line-height: 1.4; }
+.cs-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.cs-linkbtn { height: 44px; padding: 0 20px; font-size: 14.5px; }
+.cs-linkbtn svg { width: 13px; height: 13px; opacity: 0.75; }
+.cs-linkbtn .wk-tag { margin-left: 2px; }
+
+/* Media */
+.cs-media { display: grid; gap: clamp(24px, 4vw, 56px); margin-top: clamp(48px, 7vw, 110px); }
+.cs-stage { position: relative; display: flex; justify-content: center; gap: clamp(12px, 2.4vw, 32px); padding-block: clamp(6px, 2vw, 24px); }
+.cs-stage::before {
+  content: none;
+}
+.cs-fig { position: relative; z-index: 1; min-width: 0; margin: 0; }
+.cs-fig--tall { flex: 1 1 0; max-width: 320px; }
+.cs-fig__frame {
+  position: relative; overflow: hidden; border-radius: 22px; background: #000;
+  border: 1px solid var(--line-2);
+}
+.cs-fig__frame video, .cs-fig__frame img { width: 100%; height: 100%; object-fit: cover; }
+.cs-fig figcaption { margin-top: 14px; text-align: center; font-size: 13px; line-height: 1.45; color: var(--text-3); }
+.cs-wide .cs-fig { max-width: 980px; margin-inline: auto; }
+.cs-fig--paper .cs-fig__frame { padding: clamp(8px, 1.4vw, 16px); border-radius: 22px; background: #f4f1ee; border-color: var(--line-3); }
+.cs-fig--paper .cs-fig__frame img { object-fit: contain; border-radius: 12px; }
+.cs-duo { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: clamp(18px, 3vw, 44px); align-items: center; }
+.cs-duo .cs-fig--tall { width: 100%; max-width: 340px; justify-self: center; }
+
+/* Sections */
+.cs-section { position: relative; display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr); gap: 20px clamp(24px, 5vw, 88px); padding-block: clamp(40px, 6vw, 88px); margin-top: clamp(0px, 2vw, 20px); }
+.cs-section::before { content: ''; position: absolute; top: 0; left: var(--gutter); right: var(--gutter); height: 1px; background: var(--line); }
+.cs-hero + .container + .container + .cs-section::before { display: none; }
+.cs-h { position: sticky; top: 96px; align-self: start; width: max-content; font-size: 15px; font-weight: 600; letter-spacing: -0.005em; color: var(--text-2); }
+.cs-col { min-width: 0; }
+.cs-results li, .cs-did li { color: var(--text-2); }
+.cs-results strong, .cs-did strong { color: var(--text); font-weight: 650; }
+.cs-results li, .cs-did li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 18px; align-items: start; border-bottom: 1px solid var(--line); }
+.cs-results li { padding-block: 20px; font-size: clamp(18px, 1.75vw, 23px); line-height: 1.45; letter-spacing: -0.01em; }
+.cs-did li { padding-block: 20px; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.55; }
+.cs-results li:first-child, .cs-did li:first-child { padding-top: 0; }
+.cs-results li:last-child, .cs-did li:last-child { border-bottom: 0; }
+.cs-results li::before { content: ''; width: 6px; height: 6px; margin-top: 0.7em; border-radius: 50%; background: var(--ember); }
+.cs-did li::before { content: ''; width: 12px; height: 1px; margin-top: 0.95em; background: var(--text-3); }
+
+/* TactileVLA eval grid, in heat */
+.cs-evalwrap { margin: 36px 0 0; }
+.cs-eval { display: grid; grid-template-columns: 2.4ch repeat(3, minmax(0, 132px)); gap: 8px; width: max-content; max-width: 100%; font-family: var(--font-mono); }
+.cs-eval__axis { display: grid; place-items: center; font-size: 12px; color: var(--text-3); }
+.cs-eval__cell {
+  display: grid; place-content: center; gap: 3px; aspect-ratio: 1.35; padding: 6px; border-radius: 14px; text-align: center;
+  border: 1px solid var(--line-2); background: rgba(255, 240, 230, 0.03); color: var(--text-3); font-size: 11.5px; line-height: 1.25;
+}
+.cs-eval__cell b { font-size: 16px; font-weight: 600; color: var(--text); }
+.cs-eval__cell--held { border: 1px dashed var(--ember); background: transparent; color: var(--text-2); }
+.cs-eval__cell--held b { color: var(--text); }
+.cs-evalwrap figcaption { max-width: 52ch; margin-top: 16px; font-size: 14px; line-height: 1.5; color: var(--text-3); }
+
+.cs-codes { display: grid; gap: clamp(34px, 5vw, 64px); min-width: 0; }
+.cs-codeblock { min-width: 0; }
+.cs-cap { margin-bottom: 14px; font-size: 16px; line-height: 1.45; color: var(--text-2); }
+.cs-prnote { margin-top: 16px; font-size: 15px; line-height: 1.55; color: var(--text-2); }
+
+/* Next project */
+.cs-next {
+  position: relative; display: grid; gap: 14px; width: 100%; padding: clamp(26px, 4.4vw, 60px); margin: clamp(30px, 5vw, 70px) 0 clamp(60px, 9vw, 130px);
+  text-align: left; cursor: pointer; border-radius: var(--radius-lg); border-color: var(--line-2);
+  background: #080808;
+}
+.cs-next__label { font-size: 14px; font-weight: 500; color: var(--text-3); }
+.cs-next__title {
+  padding-right: 80px; font-weight: 600; letter-spacing: -0.045em;
+  font-size: clamp(32px, 5vw, 64px); line-height: 1;
+}
+.cs-next__sum { max-width: 58ch; line-height: 1.55; color: var(--text-2); }
+.cs-next__arrow {
+  position: absolute; top: clamp(22px, 3.4vw, 48px); right: clamp(22px, 3.4vw, 48px); display: grid; place-items: center; width: 54px; height: 54px;
+  border-radius: 50%; border: 1px solid var(--line-3); color: var(--text); transition: background 0.3s, color 0.3s, transform 0.5s var(--ease), border-color 0.3s;
+}
+.cs-next__arrow svg { width: 20px; height: 20px; }
+.cs-next:hover .cs-next__arrow { background: var(--text); color: #000; border-color: transparent; transform: rotate(-45deg); }
+
+@media (max-width: 899px) {
+  .cs-section { grid-template-columns: minmax(0, 1fr); }
+  .cs-h { position: static; }
+  .cs-duo { grid-template-columns: minmax(0, 1fr); }
+  .cs-duo .cs-fig--tall { max-width: 300px; }
+}
+@media (max-width: 720px) {
+  .cs-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cs-metrics .metric:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .cs-stage { flex-wrap: wrap; }
+  .cs-stage .cs-fig--tall { flex: 1 1 calc(50% - 12px); max-width: none; }
+  .cs-back span { display: none; }
+  .cs-back { padding: 0 12px; }
+  .cs-bar__count { margin-left: auto; }
+  .cs-next__title { padding-right: 0; padding-top: 56px; }
+  .cs-eval { grid-template-columns: 2ch repeat(3, minmax(0, 1fr)); width: 100%; }
+}
+@media (max-width: 560px) {
+  .cs-panel { border-radius: 22px 22px 0 0; }
+  .cs-bar { height: 60px; }
+  .cs-stage .cs-fig--tall { flex-basis: calc(50% - 8px); }
+  .cs-fig__frame { border-radius: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-panel { transform: none; }
+}

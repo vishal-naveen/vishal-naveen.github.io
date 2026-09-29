@@ -1,0 +1,72 @@
+/* v5 "Effortless" tokens. Same black + ember world as v4, used with restraint: one accent, spent on
+   small things (a status dot, a lit LED, a hovered link). No glows on text, no gradients on type.
+   (v4 notes follow.) v4 "Incandescent" tokens.
+   Black is the absence of light; the only light on this site is heat. Every accent is a point on
+   the blackbody ramp (smolder → oxblood → crimson → ember → orange → amber → white-hot), and
+   temperature encodes emphasis: resting things are cool, the thing under the cursor runs hot.
+   Contrast on #000: --text 18.9:1, --text-2 8.9:1, --text-3 5.3:1, --ember 6.2:1. */
+:root {
+  --bg: #000;
+  --bg-1: #070404;          /* raised surface */
+  --bg-2: #0e0807;          /* card */
+  --bg-3: #160c0a;          /* card hover / inset */
+  --surface: rgba(20, 11, 9, 0.66);
+  --line: rgba(255, 240, 230, 0.08);
+  --line-2: rgba(255, 240, 230, 0.14);
+  --line-3: rgba(255, 240, 230, 0.24);
+
+  --text: #f3efeb;
+  --text-2: #a8a19b;
+  --text-3: #79726c;
+
+  /* Blackbody ramp, coolest to hottest */
+  --heat-0: #1c0604;        /* smolder */
+  --heat-1: #5e0b07;        /* oxblood */
+  --heat-2: #b5170f;        /* crimson */
+  --heat-3: #ff5a1f;        /* ember: the one accent */
+  --heat-4: #ff7a1f;        /* dark orange */
+  --heat-5: #ffb25e;        /* amber */
+  --heat-6: #ffeede;        /* white-hot */
+  --ember: var(--heat-3);
+  --ember-rgb: 255, 90, 31;
+  --orange-rgb: 255, 122, 31;
+
+  --grad-heat: linear-gradient(90deg, #5e0b07 0%, #b5170f 22%, #ff4115 48%, #ff7a1f 70%, #ffb25e 86%, #ffeede 100%);
+  --grad-metal: linear-gradient(180deg, #ffeede 0%, #ffb25e 22%, #ff7a1f 42%, #ff4115 62%, #b5170f 82%, #5e0b07 100%);
+  --glow: none;
+
+  --font-display: 'Mona Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Mona Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Type scale. Display = Mona Sans 600, mixed case, tight tracking. */
+  --fs-hero: clamp(64px, 10.5vw, 176px);
+  --fs-d1: clamp(40px, 5.2vw, 76px);    /* section titles */
+  --fs-d2: clamp(30px, 3.4vw, 50px);
+  --fs-h2: clamp(30px, 3.4vw, 50px);    /* sans headings */
+  --fs-h3: clamp(21px, 1.7vw, 26px);
+  --fs-statement: clamp(22px, 2.2vw, 32px);
+  --fs-lead: clamp(18px, 1.45vw, 21px);
+  --fs-body: 16px;
+  --fs-small: 14px;
+  --fs-mono: 13px;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --gutter: clamp(18px, 4vw, 56px);
+  --max: 1200px;
+  --section: clamp(96px, 11vw, 160px);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-heat: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --z-canvas: 1;
+  --z-ui: 5;
+  --z-nav: 50;
+  --z-modal: 80;
+  --z-palette: 90;
+  --z-cursor: 120;
+  --z-loader: 150;
+}
