@@ -29,7 +29,7 @@ export async function mount(ctx) {
     `<div class="pcb__grid">` +
     `<div class="pcb__board reveal">` +
     `<div class="pcb__stage" data-state="loading"><div class="pcb__gl"></div><div class="pcb__tiles" hidden>${tiles}</div>` +
-    `<p class="pcb__hint" aria-hidden="true"><i></i><span>${canHover() ? 'Hover a chip' : 'Tap a chip'}</span></p></div>` +
+    `<p class="pcb__hint" aria-hidden="true"><i></i><span>${canHover() ? 'Hover a chip' : 'Tap a chip'} to see where I’ve used it</span></p></div>` +
     `<ul class="pcb__list visually-hidden" aria-label="Tech stack, one control per skill">${list}</ul>` +
     `</div>` +
     `<div class="pcb__readout" aria-live="polite" aria-atomic="true">` +

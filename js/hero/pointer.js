@@ -16,7 +16,7 @@ export function trackPointer(ctx, section) {
 
   /** Hero-relative css px, or null if the pointer has not been over the hero recently. */
   p.rel = (rect, idleMs = 2500) => {
-    if (!p.inside || performance.now() - p.lastMove > idleMs) return null;
+    if (!p.inside || performance.now() - p.lastMove > (p.touch ? Math.max(idleMs, 4500) : idleMs)) return null;
     return { x: p.clientX - rect.left, y: p.clientY - rect.top };
   };
   ctx.hero.pointer = p;

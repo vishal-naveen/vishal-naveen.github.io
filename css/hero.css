@@ -58,6 +58,16 @@
 .arm-ready .hero__cap { opacity: 0.85; }
 .hero__cap:empty, .arm-failed .hero__cap { display: none; }
 .cap__title { color: var(--text-2); }
+.cap__hint {
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  font-family: var(--font-sans); font-size: 13px; font-weight: 550; letter-spacing: -0.01em; color: var(--text);
+  transition: opacity 0.6s var(--ease);
+}
+.cap__hint i { position: relative; width: 7px; height: 7px; border-radius: 50%; background: var(--ember); }
+.cap__hint i::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid var(--ember); animation: pcb-ripple 1.6s var(--ease) infinite; }
+.hero__cap.is-used .cap__hint { opacity: 0; }
+@keyframes pcb-ripple { from { transform: scale(0.5); opacity: 0.9; } to { transform: scale(2.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .cap__hint i::after { animation: none; } }
 .cap__vals { font-variant-numeric: tabular-nums; }
 
 .hero__intro { position: relative; z-index: 3; max-width: 35rem; width: 100%; }
