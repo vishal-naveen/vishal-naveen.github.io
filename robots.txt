@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://vishal-naveen.github.io/sitemap.xml
