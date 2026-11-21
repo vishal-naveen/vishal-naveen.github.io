@@ -4,568 +4,459 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vishal Naveen, software engineer</title>
-<meta name="description" content="Vishal Naveen, software engineer and electrical engineering student at the University of Florida: robotics and machine learning in Python and C++, systems software, apps and embedded firmware.">
+<meta name="description" content="Vishal Naveen, electrical engineering student at the University of Florida: robotics and machine learning in Python and C++, research, embedded firmware and apps.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23100C09%27/%3E%3Crect x=%278%27 y=%278%27 width=%2716%27 height=%2716%27 rx=%272%27 fill=%27%23EFE7DA%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://api.fontshare.com">
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="lib/lenis.css">
-<script>
-// one.html: the whole page in one document, so the chip hands off to the work without a cut (TRANSITIONS.md T6/T7).
-// ?rm=1 forces reduced motion; ?pal=b is the graphite palette.
-{const d=document.documentElement,q=location.search;d.classList.add("js");if(/[?&]pal=b/.test(q))d.classList.add("pal-b");
- if(/[?&]rm=1/.test(q)||matchMedia("(prefers-reduced-motion: reduce)").matches)d.classList.add("rm");
- setTimeout(()=>d.classList.add("ready"),4000)} // safety: never leave the hero hidden if the module fails
-</script>
-<script type="importmap">{"imports":{"three":"./lib/three.module.js","three/addons/":"./lib/addons/","lenis":"./lib/lenis.mjs"}}</script>
+<link rel="preload" as="image" href="media/chip.webp">
+<!-- v8 (2026-11-20). First: "It just takes too long to get from the intro to my projects and experience ... put experience
+     first ... convenient and easy to use" -> one document, Experience right under the hero, no scroll-driven stage.
+     Then: "way too basic ... add back the effects and make it fun but keep it professional ... dont waste time scrolling
+     you can add stuff around it" -> the live chip is back as a hero toy (lean, click to open, the die as a map), and the
+     effects sit around the content (reveals, spotlight, light spill, the copper rail, nav underline, Cmd+K). No pinning,
+     no scroll hijack: native scroll, and every effect is skippable. ?rm=1 forces reduced motion. -->
+<script>{const d=document.documentElement;d.classList.add("js");if(/[?&]rm=1/.test(location.search)||matchMedia("(prefers-reduced-motion: reduce)").matches)d.classList.add("rm");setTimeout(()=>d.classList.add("ready"),30)}</script>
+<script type="importmap">{"imports":{"three":"./lib/three.module.js","three/addons/":"./lib/addons/"}}</script>
 <style>
-html.pal-b{--bg:#0B0C0D;--cream:#ECE9E3;--soft:#CFCBC4;--mute:#8C8983;--faint:#55534F;--pool1:#25231F;--pool2:#121314}
-:root{--pool1:#2E2118;--pool2:#160F0B;
-  --bg:#100C09;--cream:#EFE7DA;--soft:#D6CCBC;--mute:#9A8F80;--faint:#5F574D;
-  --line:rgba(239,231,218,.10);--line2:rgba(239,231,218,.18);--brass:#C9A66B;
-  --pad:clamp(18px,2.8vw,44px);--hh:78px;
-  /* motion tokens (TRANSITIONS.md rule 5) */
-  --t-fast:160ms;--t-ui:320ms;--t-rv:700ms;--out:cubic-bezier(.16,1,.3,1);--st:cubic-bezier(.4,0,.2,1);--ease:var(--out)}
+:root{--bg:#100C09;--card:#16110D;--card2:#1D1712;--cream:#EFE7DA;--soft:#D6CCBC;--ink2:#C5BAAB;--ink3:#9C9284;--faint:#5F574D;
+  --rule:rgba(239,231,218,.085);--rule0:rgba(239,231,218,.055);--rule2:rgba(239,231,218,.15);--acc:#8E9AE6;--acc2:#6670F0;
+  --pool1:#2E2118;--pool2:#160F0B;--pad:clamp(16px,3vw,48px);--hh:68px;--out:cubic-bezier(.16,1,.3,1);--st:cubic-bezier(.4,0,.2,1);color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg)}
-body{color:var(--cream);font:400 16px/1.55 Switzer,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+html{background:var(--bg);scroll-padding-top:calc(var(--hh) + 12px)}
+html:not(.rm){scroll-behavior:smooth}
+body{color:var(--cream);font:400 16px/1.55 Switzer,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;background:var(--bg)}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .mono{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.02em}
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--pad)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:8px;top:-60px;z-index:100;background:var(--cream);color:var(--bg);padding:8px 12px;border-radius:8px}
+.skip:focus{top:8px}
+.grain{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 
-.bg{position:fixed;inset:0;z-index:0;background:
-  radial-gradient(58% 52% at 50% 62%,rgba(168,120,78,.20),transparent 70%),
-  radial-gradient(120% 90% at 50% 40%,#1C1510 0%,#120E0A 55%,#0A0806 100%)}
-.grain{position:fixed;inset:-50%;z-index:90;pointer-events:none;opacity:.06;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  animation:grain 1s steps(6) infinite}
-@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
-.vig{position:fixed;inset:0;z-index:4;pointer-events:none;background:radial-gradient(120% 100% at 50% 50%,transparent 58%,rgba(0,0,0,.5) 100%)}
-/* header legibility over the dive: fixed under the paper, so the rising edge covers it (no JS clip, no lag) */
-#hscrim{position:fixed;top:0;left:0;right:0;height:150px;z-index:5;pointer-events:none;opacity:0;background:linear-gradient(rgba(9,7,5,.94),rgba(9,7,5,.72) 52%,rgba(9,7,5,0))}
-
-/* header: cream on the dark page; each surface carries its own blurred bar */
-header{position:fixed;top:0;left:0;right:0;z-index:80;height:var(--hh);display:flex;justify-content:space-between;align-items:center;padding:0 var(--pad);font-size:14px;font-weight:500;color:var(--cream);opacity:0;transition:opacity .7s var(--out) .4s}
-.ready header{opacity:1}
-header nav{display:flex;align-items:center;gap:28px;position:relative}
-header .u{position:relative}
-.u::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform var(--t-ui) var(--out)}
-.u:hover::after{transform:scaleX(1);transform-origin:left}
-.pill{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:500;transition:transform var(--t-fast) var(--st),background var(--t-fast),box-shadow var(--t-fast)}
-.pill:active,.btn:active{transform:scale(.98)}
-.pill.solid{background:var(--cream);color:#120d09}
-.pill.line{box-shadow:inset 0 0 0 1px var(--line2)}
-.pill.line:hover{box-shadow:inset 0 0 0 1px rgba(239,231,218,.55)}
+/* header: always there, always readable; a sliding underline marks the section you're in */
+header{position:sticky;top:0;z-index:50;height:var(--hh);background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--rule)}
+header .wrap{height:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:14px;font-weight:500}
+header nav{display:flex;align-items:center;gap:clamp(14px,2.2vw,28px);position:relative}
+header nav a:not(.pill){position:relative;transition:color .2s var(--st)}
+header nav a:not(.pill):hover{color:#fff}
+#ind{position:absolute;left:0;bottom:-6px;height:1px;width:0;background:currentColor;opacity:0;pointer-events:none;transition:transform .35s var(--out),width .35s var(--out),opacity .25s var(--st)}
 .kbd{font-family:"Geist Mono",monospace;font-size:11px;border:1px solid currentColor;border-radius:5px;padding:2px 6px;opacity:.7}
+.kbd:hover{opacity:1}
+.pill{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:500;transition:transform .16s var(--st),background .16s,box-shadow .16s}
+.pill:active,.links a:active{transform:scale(.98)}
+.pill.solid{background:var(--cream);color:#120d09}
+.pill.solid:hover{background:#fff}
+.pill.line{box-shadow:inset 0 0 0 1px var(--rule2)}
+.pill.line:hover{box-shadow:inset 0 0 0 1px rgba(239,231,218,.55)}
 
-/* ---------------------------------------------------------------- stage: 560 svh pinned; the camera story, then the Sixth Sense region becomes its card (one.js W_) */
-#stage{position:relative;height:384svh;z-index:1}
-.pin{position:sticky;top:0;height:100svh;overflow:hidden;background:radial-gradient(ellipse 46% 42% at 50% 64%,var(--pool1) 0%,var(--pool2) 58%,var(--bg) 100%);will-change:transform}
-#gl{position:absolute;inset:0;width:100%;height:100%;z-index:2;display:block}
-#shade{position:absolute;inset:0;z-index:20;background:#060403;opacity:0;pointer-events:none}
-.giant{position:absolute;left:0;right:0;top:19.5vh;z-index:1;text-align:center;font-weight:600;letter-spacing:-.065em;line-height:.8;font-size:15.6vw;white-space:nowrap;color:var(--cream)}
-.giant .sx{display:block}
+/* ---- hero: the chip floats in front of the name; click it to open the lid. One screen, no pin. */
+.hero{position:relative;height:clamp(560px,calc(94svh - var(--hh)),900px);overflow:hidden;
+  background:radial-gradient(ellipse 46% 46% at 50% 58%,var(--pool1) 0%,var(--pool2) 58%,var(--bg) 100%)}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(transparent,var(--bg));pointer-events:none;z-index:4}
+.giant{position:absolute;left:0;right:0;top:7%;z-index:1;text-align:center;font-weight:600;letter-spacing:-.065em;line-height:.8;font-size:min(14.6vw,27svh);white-space:nowrap}
 .giant .w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .02em .04em}
-.giant .w+.w{margin-left:.08em} /* C25: the tight tracking had closed the word space */
-.giant .w span{display:inline-block;transform:translateY(102%);transition:transform 1.3s var(--out)}
-.ready .giant .w span{transform:none}
-.ready .giant .w:nth-child(2) span{transition-delay:.08s}
-.intro{position:absolute;z-index:3;left:var(--pad);bottom:clamp(22px,4vh,40px);max-width:440px}
-.intro .k{color:var(--soft);margin-bottom:12px;font-size:13px}
-.intro .nowm{display:none}
+.giant .w+.w{margin-left:.08em}
+.giant .w span{display:inline-block}
+.js:not(.rm) .giant .w span{transform:translateY(102%);transition:transform 1.3s var(--out)}
+.js:not(.rm).ready .giant .w span{transform:none}
+.js.ready .giant .w:nth-child(2) span{transition-delay:.08s}
+.stagebox{position:absolute;inset:0;z-index:2}
+.stagebox canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .5s var(--st)}
+.chip-live .stagebox canvas{opacity:1}
+.still{position:absolute;left:50%;top:51%;width:min(62.5%,118svh);transform:translate(-50%,-45%);transition:opacity .45s var(--st);pointer-events:none}
+.chip-live .still{opacity:0}
+.tip{position:absolute;left:0;top:0;z-index:6;pointer-events:none;background:rgba(16,12,9,.92);border:1px solid var(--rule2);border-radius:10px;padding:9px 12px;opacity:0;transition:opacity .18s var(--st);white-space:nowrap}
+.tip.on{opacity:1}
+.tip b{display:block;font-size:14px;font-weight:600}
+.tip span{display:block;color:var(--ink3);font-family:"Geist Mono",monospace;font-size:11px;margin-top:2px}
+.tip i{display:block;font-style:normal;color:var(--acc);font-size:12px;margin-top:4px}
+.hint{position:absolute;left:0;right:0;bottom:clamp(18px,3.4vh,34px);text-align:center;z-index:5;color:var(--faint);pointer-events:none;transition:color .3s}
+.hero:hover .hint{color:var(--ink3)}
+.intro{position:absolute;z-index:5;left:var(--pad);bottom:clamp(22px,4vh,40px);max-width:440px}
+.intro .k{color:var(--soft);margin-bottom:10px;font-size:13px}
 .intro p{font-size:19px;line-height:1.36;letter-spacing:-.012em;color:#E9E1D4}
-.intro .cta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-.side{position:absolute;z-index:3;right:var(--pad);bottom:clamp(22px,4vh,40px);text-align:right;display:grid;gap:14px;justify-items:end}
-.side .roles{font-size:14px;line-height:1.6;color:var(--soft)}
-.side .roles span{color:var(--mute)}
-.cue{position:absolute;z-index:3;left:50%;bottom:26px;transform:translateX(-50%);color:var(--faint)}
-.fadein{opacity:0;transform:translateY(16px);transition:opacity var(--t-rv) var(--out),transform var(--t-rv) var(--out)}
-.ready .fadein{opacity:1;transform:none}
-.ready .d1{transition-delay:.5s}.ready .d2{transition-delay:.56s}.ready .d3{transition-delay:.62s}
-/* the scroll-driven layers: an inner wrapper takes the scrubbed opacity so it never fights the CSS entrance */
-.sx{will-change:opacity,transform}
-.rhead{position:absolute;z-index:3;left:var(--pad);top:96px;max-width:680px;opacity:0;pointer-events:none}
-.rhead::before{content:"";position:absolute;inset:-140px -120px -200px -60px;z-index:-1;background:radial-gradient(closest-side,rgba(10,8,6,.85),transparent)}
-.rhead h2{font-size:clamp(52px,6.6vw,112px);font-weight:600;letter-spacing:-.055em;line-height:.88}
-.rhead p{color:var(--soft);margin-top:16px;font-size:16px;line-height:1.45;max-width:46ch}
-#labels{position:absolute;inset:0;z-index:5;pointer-events:none}
-#labels svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-#labels svg path{fill:none;stroke:rgba(239,231,218,.5);stroke-width:1}
-#labels svg rect{fill:var(--cream)}
-#labels svg text.num{fill:var(--cream);font:500 10px "Geist Mono",monospace}
-.lab{position:absolute;width:270px;opacity:0;text-shadow:0 1px 14px rgba(8,6,4,.9)} /* C25: no box; a soft shadow keeps it legible over the die */
-.lab .n{color:var(--mute);margin-bottom:5px}
-.lab .t{font-size:18px;font-weight:600;letter-spacing:-.015em}
-.lab .p{font-size:14px;color:var(--mute);line-height:1.45;margin-top:3px}
-.lab.l{text-align:right}
-/* the die as a map (one.js): while the labels are up, a hovered block lights on the die and its label lights with it */
-.rhead .hint{display:none;margin-top:14px;font-size:12px;color:var(--mute);max-width:none}
-@media (hover:hover){.js:not(.rm) .rhead .hint{display:block}}
-#labels.live .lab{pointer-events:auto;cursor:pointer}
-.lab .t{transition:color var(--t-ui) var(--st)}
-.lab.hot .t{color:#C3CAFF}
-#labels svg path.hot{stroke:#8E9AE6}
-#labels svg rect.hot{fill:#8E9AE6}
+.cta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.side{position:absolute;z-index:5;right:var(--pad);bottom:clamp(22px,4vh,40px);text-align:right;display:grid;gap:4px;font-size:14px;line-height:1.55;color:var(--soft)}
+.side .mono{color:var(--ink3);font-size:11px}
+.side a{transition:color .2s}
+.side a:hover{color:#fff}
+.side a span{color:var(--ink3)}
+.side .open{color:var(--ink3);margin-top:8px}
+.fadein{transition:opacity .7s var(--out),transform .7s var(--out)}
+.js:not(.rm) .fadein{opacity:0;transform:translateY(14px)}
+.js:not(.rm).ready .fadein{opacity:1;transform:none}
+.js.ready .d1{transition-delay:.45s}.js.ready .d2{transition-delay:.55s}.js.ready .d3{transition-delay:.65s}
+.chip-open .giant{opacity:.18;transition:opacity .8s var(--st)}
+.giant{transition:opacity .8s var(--st)}
 
-/* ---------------------------------------------------------------- the tail: paper, then the dark closer */
-/* the paper is held (sticky) over the pinned stage while it grows out of the chip; one.js sets #tail's margin, #rsp's
-   height and #paper's top from the layout, so the hold starts exactly when the panel window opens */
-#tail{position:relative;z-index:10;margin-top:-168svh}
-/* a surface's own header bar: sticky inside it, so it exists exactly where that surface is (the edge cuts it for free) */
-.bar{position:sticky;top:0;height:var(--hh);margin-bottom:calc(-1 * var(--hh));z-index:8;pointer-events:none;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+/* ---- sections */
+section{padding-top:clamp(36px,6vh,72px)}
+.sh{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:22px}
+.sh .k{color:var(--ink3);margin-bottom:10px}
+.sh h2{font-size:clamp(36px,4.2vw,60px);font-weight:600;letter-spacing:-.045em;line-height:.95}
+.sh p{color:var(--ink2);max-width:420px;text-align:right}
 
-/* the work page: the same warm dark as the stage (11-07: "make the entire thing dark themed like u did at the start") */
-#paper{--card:#16110D;--card2:#1D1712;--ink:var(--cream);--ink2:#C5BAAB;--ink3:#9C9284;--rule:rgba(239,231,218,.085);--rule0:rgba(239,231,218,.055);--rule2:rgba(239,231,218,.15);
-  --acc:#8E9AE6;--acc2:#6670F0;--dark:#0B0806;--pad:clamp(16px,3vw,48px);
-  position:sticky;top:0;z-index:1;background:var(--bg);color:var(--ink);padding-bottom:14vh;visibility:hidden}
-#paper .bar{background:color-mix(in srgb,var(--bg) 78%,transparent);box-shadow:0 1px 0 var(--rule)}
-#paper .wrap{max-width:1240px;margin:0 auto;padding:0 var(--pad)}
-#paper .sh{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:40px;align-items:end;padding:clamp(120px,15vh,170px) 0 5vh}
-#paper .sh .k{color:var(--ink3);margin-bottom:14px}
-#paper .sh h2{font-size:clamp(38px,4.6vw,72px);font-weight:600;letter-spacing:-.045em;line-height:.95}
-#paper .sh p{color:var(--ink2);font-size:16px;line-height:1.5;justify-self:end;max-width:420px}
-#experience .sh{padding-top:clamp(110px,16vh,180px)}
-.feat{display:grid;gap:18px}
-/* C24: light from each project's media spills onto its card (one.js draws a tiny pre-blurred copy; no CSS blur cost) */
-.fc{overflow:clip;overflow-clip-margin:1px}
-.fc>.amb{position:absolute;grid-column:2;grid-row:1;left:-8%;top:-12%;width:116%;height:124%;z-index:0;pointer-events:none;opacity:0;display:block}
-.fc>div{position:relative;z-index:1}
-.fc{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(24px,3.4vw,52px);background:var(--card);border:1px solid var(--rule0);border-radius:18px;padding:clamp(18px,2.4vw,32px)}
-.fc .eb{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--ink3)}
-.fc .eb b{font-weight:500;color:var(--ink)}
-.fc h3{font-size:clamp(36px,3.6vw,54px);font-weight:600;letter-spacing:-.045em;line-height:.98;margin:14px 0 12px}
-.fc .one{font-size:16.5px;line-height:1.48;color:var(--ink2);max-width:46ch}
-.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px;padding-top:16px;border-top:1px solid var(--rule)}
-.nums b{display:block;font-size:30px;font-weight:600;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
-.nums>div>span{display:block;font-size:12.5px;line-height:1.35;color:var(--ink2);margin-top:6px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
-.chips{gap:4px 14px!important}
-.chips span{color:var(--ink3)} /* C25: plain mono, no boxes */
-.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-.links a{font-size:13.5px;border:1px solid var(--rule2);color:var(--ink);border-radius:99px;padding:7px 13px;transition:background var(--t-fast) var(--st),border-color var(--t-fast) var(--st),transform var(--t-fast) var(--st)}
-.links a:hover{border-color:rgba(239,231,218,.5)}
-.links a.solid{background:var(--cream);color:#120d09;border-color:var(--cream)}
-.links a.solid:hover{background:#fff;border-color:#fff}
-.links a:active{transform:scale(.98)}
-.proof{margin-top:16px;color:var(--ink3)}
-.mp{display:flex;flex-direction:column;background:var(--dark);border-radius:12px;overflow:hidden;min-width:0;box-shadow:inset 0 0 0 1px rgba(239,231,218,.06),0 30px 60px -30px rgba(0,0,0,.8)}
-.pane{position:relative;height:clamp(280px,min(31vw,50svh),440px);overflow:hidden}
-.demo{position:absolute;inset:0}
-.demo img,.demo video{display:block;width:100%;height:100%;object-fit:cover}
-.demo.par img,.demo.par video{transform:scale(1.08)} /* room for the parallax (one.js) */
-.demo.contain img{object-fit:contain;background:#0E0B08}
-.demo.phones{display:flex;align-items:center;justify-content:center;gap:4%;background:radial-gradient(80% 90% at 50% 40%,#2B2018,#0E0A07)}
-.demo.phones img{width:auto;height:84%;aspect-ratio:443/960;object-fit:cover;border-radius:16px;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 20px 40px rgba(0,0,0,.5)}
-.demo .cap{position:absolute;left:14px;bottom:12px;color:#CFC6B8;background:rgba(14,11,8,.78);padding:5px 8px;border-radius:5px}
-.more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
-.mc{background:var(--card);border:1px solid var(--rule0);border-radius:16px;padding:22px;display:flex;flex-direction:column}
-.mc .eb{color:var(--ink3)}
-.mc h4{font-size:24px;font-weight:600;letter-spacing:-.03em;margin:10px 0 8px}
-.mc p{font-size:14.5px;line-height:1.5;color:var(--ink2)}
-.mc .n{margin-top:16px;padding-top:12px;border-top:1px solid var(--rule);display:flex;gap:10px;align-items:baseline}
-.mc .n b{font-size:22px;font-weight:600;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
-.mc .n>span{font-size:12.5px;color:var(--ink2)}
-.mc .chips{margin-top:14px}
-.mc .go{margin-top:auto;padding-top:16px;font-size:13.5px;color:var(--acc)}
-.mc .go:hover{color:var(--cream)}
-/* C25: the smaller projects as an index (hairline rows), not three stock cards */
-@media (min-width:861px){
-  .more{grid-template-columns:minmax(0,1fr);gap:0;margin-top:14px;border-bottom:1px solid var(--rule)}
-  .more .mc{display:grid;grid-template-columns:210px minmax(0,1.5fr) minmax(0,.8fr) minmax(0,.9fr) 110px;column-gap:28px;row-gap:6px;align-items:start;background:none;border:0;border-top:1px solid var(--rule);border-radius:0;padding:24px 0}
-  .more .mc .eb{grid-column:1;grid-row:1/span 2;padding-top:6px}.more .mc h4{grid-column:2;grid-row:1;margin:0}.more .mc p{grid-column:2;grid-row:2}
-  .more .mc .n{grid-column:3;grid-row:1/span 2;margin:0;padding:6px 0 0;border:0;flex-direction:column;align-items:flex-start;gap:4px}
-  .more .mc .chips{grid-column:4;grid-row:1/span 2;margin:0;padding-top:6px}.more .mc .go{grid-column:5;grid-row:1;margin:0;padding:6px 0 0;justify-self:end}
-  .xp{grid-template-columns:minmax(0,1fr)}#rail{left:-64px}.rows{grid-column:1}
-}
-.morehead{display:flex;justify-content:space-between;align-items:baseline;margin-top:44px;color:var(--ink3)}
-.xp{display:grid;grid-template-columns:64px minmax(0,1fr);position:relative}
-#rail{position:absolute;left:0;top:0;width:64px;height:100%;overflow:visible}
-#rail .ring{fill:none;stroke:var(--cream);stroke-width:1;opacity:0;transition:opacity var(--t-ui) var(--st)}
-#rail .ring.on{opacity:.8}
-#rail .tr{transition:stroke var(--t-ui) var(--st)}
+/* experience, with the copper rail: open roles run up to "now"; it draws in when the list arrives */
+.xp{display:grid;grid-template-columns:minmax(0,1fr);position:relative}
+#rail{position:absolute;left:-64px;top:0;width:64px;height:100%;overflow:visible}
+#rail .tr,#rail .ln{transition:stroke .3s var(--st)}
 #rail .tr.on{stroke:#C3CAFF}
-.rows{grid-column:2;display:grid;gap:14px}
+#rail .ring{fill:none;stroke:var(--cream);stroke-width:1;opacity:0;transition:opacity .3s var(--st)}
+#rail .ring.on{opacity:.8}
+.js:not(.rm) #rail .draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 1.6s var(--out)}
+.js:not(.rm) #rail.on .draw{stroke-dashoffset:0}
+.js:not(.rm) #rail .nd{opacity:0;transform:scale(.4);transform-box:fill-box;transform-origin:center;transition:opacity .4s var(--st),transform .5s var(--out)}
+.js:not(.rm) #rail.on .nd{opacity:1;transform:none}
+.rows{display:grid;gap:14px}
 .xc{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(20px,3vw,44px);background:var(--card);border:1px solid var(--rule0);border-radius:16px;padding:clamp(18px,2vw,26px)}
-.xc .top{display:flex;gap:14px;align-items:flex-start}
-.mg{flex:none;width:44px;height:44px;border-radius:10px;background:rgba(239,231,218,.06);box-shadow:inset 0 0 0 1px var(--rule2);color:var(--cream);display:grid;place-items:center;font-family:"Geist Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.02em}
-.mg{display:none!important} /* C25: no monogram tiles */
 .xc h3{font-size:21px;font-weight:600;letter-spacing:-.025em;line-height:1.15}
 .xc .org{font-size:15px;color:var(--ink2);margin-top:3px}
 .xc .ctx{color:var(--ink3);margin-top:5px}
 .date{display:inline-block;margin-top:12px;color:var(--ink3)}
 .date.now{color:var(--acc)}
-.xc ul{list-style:none;display:grid;gap:9px}
-.xc li{position:relative;padding-left:16px;font-size:14.5px;line-height:1.5;color:var(--ink2)}
-.xc li:before{content:"";position:absolute;left:0;top:.62em;width:6px;height:1px;background:var(--ink3)}
-.xc li b{font-weight:500;color:var(--ink)}
-.xc .chips{margin-top:16px}
-.xc .lk{display:inline-block;margin-top:14px;font-size:13.5px;color:var(--acc)}
-/* LDPC result: teal + blue validated for this dark surface (dataviz validator, all checks pass; values are labelled) */
+ul.b{list-style:none;display:grid;gap:9px}
+ul.b li{position:relative;padding-left:16px;font-size:14.5px;line-height:1.5;color:var(--ink2)}
+ul.b li:before{content:"";position:absolute;left:0;top:.62em;width:6px;height:1px;background:var(--ink3)}
+ul.b li b{font-weight:500;color:var(--cream)}
+.chips{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:16px}
+.chips span{color:var(--ink3)}
+.lk{display:inline-block;margin-top:14px;font-size:13.5px;color:var(--acc)}
+.lk:hover{color:var(--cream)}
+/* LDPC result: teal + blue validated for this dark surface (dataviz validator); values are labelled. Bars grow in once. */
 .mini{margin-top:14px;padding:12px 14px;border:1px solid var(--rule);border-radius:10px;background:var(--card2)}
 .mini .r{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;align-items:center;margin:5px 0}
-.mini .r span{font-size:12.5px;color:var(--ink2)}
+.mini .r>span{font-size:12.5px;color:var(--ink2)}
 .mini .bars{display:grid;gap:2px;margin-right:110px;border-left:1px solid var(--ink3)}
 .mini .b{height:7px;border-radius:0 3px 3px 0;width:calc(var(--v) * 1%);position:relative}
+.js:not(.rm) .mini .b{transform:scaleX(0);transform-origin:left;transition:transform 1s var(--out) .25s}
+.js:not(.rm) .on .mini .b{transform:none}
 .mini .b.s1{background:#22A387}.mini .b.s2{background:#6670F0}
 .mini .b em{position:absolute;left:calc(100% + 6px);top:50%;transform:translateY(-50%);font-style:normal;font-family:"Geist Mono",monospace;font-size:10.5px;color:var(--ink2);white-space:nowrap}
 .mini .b[style$="--v:0"] em{left:9px}
 .mini .lg{display:flex;gap:14px;color:var(--ink3);margin-bottom:4px}
-.mini .lg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:0}
+.mini .lg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
 
-/* the small things: cursor spotlight on cards, rolling numbers, headings that rise word by word, nav indicator */
-.spot{position:relative;isolation:isolate}
-.spot::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;opacity:var(--so,0);transition:opacity var(--t-ui) var(--st);
-  background:radial-gradient(300px circle at var(--mx,50%) var(--my,50%),rgba(239,231,218,.38),transparent 70%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
-.spot::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;opacity:var(--so,0);transition:opacity var(--t-ui) var(--st);
-  background:radial-gradient(560px circle at var(--mx,50%) var(--my,50%),rgba(239,231,218,.045),transparent 65%)}
-@media (hover:hover){.spot:hover{--so:1}}
-.odo,.och{display:inline-block;height:1em;line-height:1;vertical-align:top}
-.odo{overflow:hidden}
-.och{white-space:pre}
-.odo>span{display:block;transition:transform 1.2s var(--out)}
-.odo i{display:block;height:1em;font-style:normal}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.wd{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
-.wd>span{display:inline-block;will-change:transform}
-.js .rv.wr{transform:none}
-.js .rv.wr .wd>span{transform:translateY(106%);transition:transform .9s var(--out)}
-.js .rv.wr.on .wd>span{transform:none}
-#ind{position:absolute;left:0;bottom:-6px;height:1px;width:0;background:currentColor;opacity:0;pointer-events:none;transition:transform var(--t-ui) var(--out),width var(--t-ui) var(--out),opacity var(--t-ui) var(--st)}
-/* the hairline that grows from the panel to the screen edges as the page opens out of the chip */
-#frame{display:none!important;position:fixed;left:0;top:0;width:0;height:0;z-index:3;pointer-events:none;border:1px solid rgba(239,231,218,.34);opacity:0;visibility:hidden}
+/* work: each project's media spills its own light onto the card */
+.feat{display:grid;gap:18px}
+.fc{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(24px,3.4vw,52px);background:var(--card);border:1px solid var(--rule0);border-radius:18px;padding:clamp(18px,2.4vw,32px);overflow:clip}
+.fc>div{position:relative;z-index:1}
+.amb{grid-column:2;grid-row:1;position:relative;z-index:0;margin:-16%;background:var(--img) center/cover;filter:blur(48px) saturate(1.1);opacity:.32;pointer-events:none}
+.fc>.mp{grid-column:2;grid-row:1}
+.fc .eb{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--ink3)}
+.fc h3{font-size:clamp(32px,3.2vw,48px);font-weight:600;letter-spacing:-.045em;line-height:.98;margin:12px 0 10px}
+.fc .one{font-size:16px;line-height:1.48;color:var(--ink2);max-width:46ch}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:22px;padding-top:16px;border-top:1px solid var(--rule)}
+.nums b{display:block;font-size:28px;font-weight:600;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.nums>div>span{display:block;font-size:12.5px;line-height:1.35;color:var(--ink2);margin-top:6px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.links a{font-size:13.5px;border:1px solid var(--rule2);border-radius:99px;padding:7px 13px;transition:background .16s,border-color .16s,transform .16s}
+.links a:hover{border-color:rgba(239,231,218,.5)}
+.links a.solid{background:var(--cream);color:#120d09;border-color:var(--cream)}
+.links a.solid:hover{background:#fff}
+.mp{background:#0B0806;border-radius:12px;overflow:hidden;min-width:0;position:relative;z-index:1;height:clamp(260px,min(30vw,48svh),420px);box-shadow:inset 0 0 0 1px rgba(239,231,218,.06),0 30px 60px -30px rgba(0,0,0,.8)}
+.mp img,.mp video{display:block;width:100%;height:100%;object-fit:cover;transition:transform .9s var(--out)}
+.fc:hover .mp>img,.fc:hover .mp>video{transform:scale(1.03)}
+.mp.contain img{object-fit:contain;background:#0E0B08}
+.mp.phones{display:flex;align-items:center;justify-content:center;gap:4%;background:radial-gradient(80% 90% at 50% 40%,#2B2018,#0E0A07)}
+.mp.phones img{width:auto;height:84%;aspect-ratio:443/960;border-radius:16px;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 20px 40px rgba(0,0,0,.5);transition:transform .7s var(--out)}
+.fc:hover .mp.phones img:nth-child(1){transform:translateY(-6px) rotate(-2deg)}
+.fc:hover .mp.phones img:nth-child(2){transform:translateY(-12px)}
+.fc:hover .mp.phones img:nth-child(3){transform:translateY(-6px) rotate(2deg)}
+.cap{position:absolute;left:14px;bottom:12px;color:#CFC6B8;background:rgba(14,11,8,.78);padding:5px 8px;border-radius:5px}
+.morehead{margin:36px 0 0;color:var(--ink3)}
+.more{display:grid;grid-template-columns:minmax(0,1fr);margin-top:10px;border-bottom:1px solid var(--rule)}
+.mc{display:grid;grid-template-columns:210px minmax(0,1.5fr) minmax(0,.8fr) minmax(0,.9fr) 110px;column-gap:28px;row-gap:6px;align-items:start;border-top:1px solid var(--rule);padding:22px 0;position:relative}
+.mc::before{content:"";position:absolute;inset:0 -14px;border-radius:12px;background:rgba(239,231,218,.03);opacity:0;transition:opacity .25s var(--st);pointer-events:none}
+.mc:hover::before{opacity:1}
+.mc .eb{grid-column:1;grid-row:1/span 2;padding-top:6px;color:var(--ink3)}
+.mc h4{grid-column:2;grid-row:1;font-size:22px;font-weight:600;letter-spacing:-.03em}
+.mc p{grid-column:2;grid-row:2;font-size:14.5px;line-height:1.5;color:var(--ink2)}
+.mc .n{grid-column:3;grid-row:1/span 2;padding-top:6px;display:flex;flex-direction:column;gap:4px}
+.mc .n b{font-size:22px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.mc .n span{font-size:12.5px;color:var(--ink2)}
+.mc .chips{grid-column:4;grid-row:1/span 2;margin:0;padding-top:6px}
+.mc .go{grid-column:5;grid-row:1;padding-top:6px;justify-self:end;font-size:13.5px;color:var(--acc)}
+.mc .go:hover{color:var(--cream)}
 
-/* the closer, in normal flow */
-#closer{position:relative;z-index:2;background:var(--bg);color:var(--cream);border-top:1px solid var(--line)}
-#closer .bar{background:color-mix(in srgb,var(--bg) 80%,transparent)}
-.about{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:6vw;max-width:1240px;margin:0 auto;padding:clamp(120px,16vh,180px) clamp(16px,3vw,48px) 12vh} /* C25: on the Work grid */
-.about .k{color:var(--mute);margin-bottom:18px}
-.about h2{font-size:clamp(30px,3.2vw,50px);font-weight:500;letter-spacing:-.03em;line-height:1.08;max-width:18ch}
-.about h2 em{font-style:normal;color:var(--mute)}
-.facts{display:grid;align-content:start}
-.facts .r{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:14px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.5;color:var(--soft)}
-.facts .r:last-child{border-bottom:1px solid var(--line)}
-/* C24: each row's rule draws left to right, then its text (one.js scrubs --k; without JS, --k stays 1) */
-.facts .r{position:relative;border-top-color:transparent}
-.facts .r::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--line2);transform-origin:left}
-.js .facts .r.rv::before{transform:scaleX(0);transition:transform 1s var(--out)}
-.js .facts .r.rv.on::before{transform:none} /* C25: one-shot, scrubbing left rows half-drawn */
+/* about + contact */
+.about{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:6vw}
+.about h2{font-size:clamp(28px,3vw,46px);font-weight:500;letter-spacing:-.03em;line-height:1.1;max-width:18ch}
+.about h2 em{font-style:normal;color:var(--ink3)}
+.about .k{color:var(--ink3);margin-bottom:16px}
+.facts .r{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:13px 0;font-size:15px;line-height:1.5;color:var(--ink2);position:relative}
+.facts .r::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--rule2);transform-origin:left}
+.facts .r:last-child{border-bottom:1px solid var(--rule2)}
+.js:not(.rm) .facts .r.rv::before{transform:scaleX(0);transition:transform 1s var(--out)}
+.js:not(.rm) .facts .r.rv.on::before{transform:none}
 .facts .r b{color:var(--cream);font-weight:500}
-.facts .fk{color:var(--mute);padding-top:3px}
-/* the finale: a second pin with the hero's light, so About's dark runs into it with no edge; one.js moves the canvas in */
-.finale{position:relative;height:320svh;background:var(--bg)}
-.pin2{position:sticky;top:0;height:100svh;overflow:hidden;background:radial-gradient(ellipse 46% 42% at 50% 64%,var(--pool1) 0%,var(--pool2) 58%,var(--bg) 100%)}
-/* veil: the pin's top edge dissolves into About's dark while it rises (one.js scrubs it); scrim: the header over the bright lid */
-.fveil{position:absolute;left:0;right:0;top:0;height:62%;z-index:3;pointer-events:none;background:linear-gradient(var(--bg) 0%,var(--bg) 12%,rgba(16,12,9,.82) 34%,rgba(16,12,9,0) 100%)}
-.fscrim{position:absolute;left:0;right:0;top:0;height:150px;z-index:3;pointer-events:none;opacity:0;background:linear-gradient(rgba(9,7,5,.9),rgba(9,7,5,.6) 52%,rgba(9,7,5,0))}
-.pin2::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:radial-gradient(120% 100% at 50% 50%,transparent 58%,rgba(0,0,0,.5) 100%)}
-.fname .w span{transition:none!important} /* scrubbed per frame (one.js); a CSS transition here would lag */
-.js .fname .w span{transform:translateY(102%)}
-.fcopy{position:absolute;z-index:5;left:var(--pad);bottom:clamp(22px,4vh,40px);max-width:min(640px,calc(100vw - 2 * var(--pad)))}
-.fcopy .k{color:var(--soft);margin-bottom:12px;font-size:13px}
-.fcopy .q{font-size:19px;line-height:1.36;letter-spacing:-.012em;color:#E9E1D4}
-.fcopy .avail{display:none}
-.fside{position:absolute;z-index:5;right:var(--pad);bottom:clamp(22px,4vh,40px);text-align:right;display:grid;gap:4px;font-size:14px;line-height:1.6;color:var(--soft)}
-.fside .mute{color:var(--mute)}
-.js .fcopy>*,.js .fside{opacity:0}
-.mail{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:clamp(30px,3.4vw,56px);font-weight:600;letter-spacing:-.045em;line-height:1.05;cursor:copy;text-align:left}
-.mail u{text-decoration:none;background:linear-gradient(var(--cream),var(--cream)) 0 100%/0 2px no-repeat;transition:background-size var(--t-rv) var(--out)}
+.facts .fk{color:var(--ink3);padding-top:3px}
+.contact{margin-top:clamp(56px,9vh,96px);padding:clamp(24px,3vw,40px);background:radial-gradient(70% 120% at 85% 50%,#241A13,var(--card) 70%);border:1px solid var(--rule0);border-radius:18px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:24px 40px;position:relative;overflow:hidden}
+.contact .k{color:var(--ink3)}
+.contact .q{font-size:19px;color:#E9E1D4;margin-top:8px}
+.mail{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 14px;margin-top:6px;font-size:clamp(26px,3vw,48px);font-weight:600;letter-spacing:-.04em;line-height:1.1;text-align:left;cursor:copy}
+.mail u{text-decoration:none;background:linear-gradient(var(--cream),var(--cream)) 0 100%/0 2px no-repeat;transition:background-size .6s var(--out)}
 .mail:hover u,.mail:focus-visible u{background-size:100% 2px}
-.mail .cp{font-size:11px;font-weight:400;letter-spacing:.03em;color:var(--mute);transition:color var(--t-fast) var(--st)}
+.mail .cp{font-size:11px;font-weight:400;letter-spacing:.03em;color:var(--ink3);transition:color .16s}
 .mail:hover .cp{color:var(--cream)}
-.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-.btn{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:99px;padding:10px 16px;font-size:15px;transition:border-color var(--t-fast) var(--st),background var(--t-fast) var(--st),transform var(--t-fast) var(--st)}
-.btn:hover{border-color:rgba(239,231,218,.55)}
-.btn.solid{background:var(--cream);color:var(--bg);border-color:var(--cream)}
-.btn.solid:hover{background:#fff}
-.btn small{font-family:"Geist Mono",monospace;font-size:10.5px;opacity:.65}
-.avail{margin-top:18px;color:var(--soft);font-size:14px}
-.colo{position:relative;display:flex;justify-content:space-between;gap:24px;align-items:end;border-top:1px solid var(--line);padding:22px var(--pad) 30px;background:var(--bg);color:var(--mute);font-size:13.5px;line-height:1.5}
-.colo div:last-child{display:flex;gap:20px;color:var(--soft)}
+.contact .cta{grid-column:1;margin-top:4px}
+.cchip{grid-column:2;grid-row:1/span 2;width:clamp(220px,26vw,380px);height:auto;transition:transform .8s var(--out)}
+.cchip,.still{-webkit-mask-image:radial-gradient(50% 50% at 50% 50%,#000 72%,transparent 100%);mask-image:radial-gradient(50% 50% at 50% 50%,#000 72%,transparent 100%)}
+.contact:hover .cchip{transform:translateY(-6px) rotate(-1.5deg)}
+footer{margin-top:clamp(56px,9vh,96px);border-top:1px solid var(--rule)}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;padding-top:22px;padding-bottom:30px;color:var(--ink3);font-size:13.5px}
+footer .wrap div:last-child{display:flex;gap:20px;color:var(--ink2)}
+footer a:hover{color:var(--cream)}
 
-/* one-shot reveals: 16 px, 700 ms out-expo, once; the rise itself is the entrance for the first block */
-.js .rv{opacity:0;transform:translateY(16px);transition:opacity var(--t-rv) var(--out),transform var(--t-rv) var(--out)}
-.js .rv.on{opacity:1;transform:none}
+/* ---- small things: one-shot reveals, cursor spotlight on cards, headings that rise word by word */
+.js:not(.rm) .rv{opacity:0;transform:translateY(14px);transition:opacity .6s var(--out),transform .6s var(--out)}
+.js:not(.rm) .rv.on{opacity:1;transform:none}
+.wd{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.wd>span{display:inline-block}
+.js:not(.rm) .rv .wd>span{transform:translateY(106%);transition:transform .8s var(--out)}
+.js:not(.rm) .rv.on .wd>span{transform:none}
+.spot{position:relative;isolation:isolate}
+.spot::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;opacity:var(--so,0);transition:opacity .3s var(--st);z-index:2;
+  background:radial-gradient(300px circle at var(--mx,50%) var(--my,50%),rgba(239,231,218,.4),transparent 70%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+.spot>.glow{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;opacity:var(--so,0);transition:opacity .3s var(--st);background:radial-gradient(560px circle at var(--mx,50%) var(--my,50%),rgba(239,231,218,.05),transparent 65%)}
+@media (hover:hover){.spot:hover{--so:1}}
 
 /* toast + Cmd+K */
-.toast{position:fixed;left:50%;bottom:28px;z-index:96;display:flex;align-items:center;gap:12px;background:var(--cream);color:#0B0C0D;border-radius:10px;padding:12px 16px;font-size:14px;box-shadow:0 20px 50px rgba(0,0,0,.5);
-  opacity:0;transform:translate(-50%,12px);pointer-events:none;transition:opacity var(--t-ui) var(--out),transform var(--t-ui) var(--out)}
+.toast{position:fixed;left:50%;bottom:28px;z-index:96;display:flex;gap:10px;background:var(--cream);color:#0B0C0D;border-radius:10px;padding:12px 16px;font-size:14px;box-shadow:0 20px 50px rgba(0,0,0,.5);opacity:0;transform:translate(-50%,12px);pointer-events:none;transition:opacity .3s var(--out),transform .3s var(--out)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .toast b{font-weight:600}
-#pk{position:fixed;inset:0;z-index:95;display:flex;align-items:flex-start;justify-content:center;padding-top:14vh;background:rgba(6,5,4,.6);opacity:0;visibility:hidden;transition:opacity var(--t-fast) var(--st),visibility 0s linear var(--t-fast)}
-#pk.on{opacity:1;visibility:visible;transition:opacity var(--t-fast) var(--st),visibility 0s}
-.pal{width:min(620px,calc(100vw - 32px));background:#16120F;border:1px solid rgba(239,231,218,.14);border-radius:14px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6);transform:scale(.98);transition:transform var(--t-fast) var(--out)}
-#pk.on .pal{transform:none}
-.pal input{width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:16px 18px;font:400 17px Switzer,system-ui,sans-serif;color:var(--cream);outline:none}
+#pk{position:fixed;inset:0;z-index:95;display:flex;align-items:flex-start;justify-content:center;padding-top:14vh;background:rgba(6,5,4,.6);opacity:0;visibility:hidden;transition:opacity .16s var(--st),visibility 0s linear .16s}
+#pk.on{opacity:1;visibility:visible;transition:opacity .16s var(--st),visibility 0s}
+.pal{width:min(620px,calc(100vw - 32px));background:#16120F;border:1px solid rgba(239,231,218,.14);border-radius:14px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.pal input{width:100%;background:none;border:0;border-bottom:1px solid var(--rule);padding:16px 18px;font:400 17px Switzer,system-ui,sans-serif;color:var(--cream);outline:none}
 .pal input::placeholder{color:var(--faint)}
 .pal .list{max-height:min(52vh,420px);overflow:auto;padding:6px 8px 8px}
 .pal .h{color:var(--faint);padding:10px 10px 6px}
 .pal .it{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:9px 10px;border-radius:8px;font-size:15px;color:var(--soft);cursor:pointer}
 .pal .it em{font-style:normal;color:var(--faint);font-family:"Geist Mono",monospace;font-size:11px;align-self:center}
 .pal .it.sel{background:rgba(239,231,218,.08);color:var(--cream)}
-.pal .ft{display:flex;gap:16px;padding:10px 18px;border-top:1px solid var(--line);color:var(--faint)}
+.pal .ft{display:flex;gap:16px;padding:10px 18px;border-top:1px solid var(--rule);color:var(--faint)}
 
+@media (max-width:1360px){#rail{left:-44px;width:44px}}
 @media (max-width:860px){
-  header nav .hs{display:none}
-  .giant{top:17vh;font-size:15.7vw}
-  .side,.cue{display:none}
-  .intro p{font-size:17px}
-  .intro .nowm{display:block;font-size:14px;line-height:1.45;color:var(--soft);margin-top:12px}.intro .nowm .mono{color:var(--mute);margin-right:6px}
-  .lab{width:calc(50vw - 24px)}.lab .p{display:none}.lab .n{margin-bottom:2px}.lab .t{font-size:15px}
-  .rhead{top:84px}.rhead h2{font-size:30px}.rhead p{display:none}
-  #paper .sh{grid-template-columns:minmax(0,1fr);gap:14px;padding:110px 0 4vh}#paper .sh p{justify-self:start}
-  .fc{grid-template-columns:minmax(0,1fr);gap:18px}
-  .fc .mp{order:-1} /* phones: the product first, so the chip region lands on it */
-  .fc>.amb{display:none}
-  .giant{white-space:normal;font-size:26vw;line-height:.84}.giant .w+.w{margin-left:0}
-  .pane{height:clamp(240px,62vw,360px)}
-  .more{grid-template-columns:minmax(0,1fr)}
-  .xp{grid-template-columns:22px minmax(0,1fr)}#rail{width:22px}
-  .xc{grid-template-columns:minmax(0,1fr);gap:14px}
-  .nums b{font-size:24px}
-  .about{grid-template-columns:minmax(0,1fr);padding:110px 16px 8vh;gap:36px}
+  header nav .hide-s{display:none}
+  .hero{height:auto;overflow:visible;padding:22px 0 26px}
+  .hero::after{display:none}
+  .giant{position:relative;top:auto;white-space:normal;font-size:24vw;line-height:.84}
+  .giant .w+.w{margin-left:0}
+  .stagebox{position:relative;inset:auto;height:74vw;margin-top:-15vw}
+  .stagebox canvas{-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 86%,transparent)}
+  .still{width:92%;top:50%;transform:translate(-50%,-50%)}
+  .hint{position:relative;left:auto;right:auto;bottom:auto;margin-top:-10px;padding:0 16px}
+  .intro,.side{position:relative;left:auto;right:auto;bottom:auto;padding:0 16px;max-width:none}
+  .intro{margin-top:18px}.intro p{font-size:17px}
+  .side{text-align:left;margin-top:20px}
+  .sh{flex-direction:column;align-items:start;gap:8px}.sh p{text-align:left}
+  #rail{left:0;width:16px}
+  .xp{padding-left:22px}
+  .xc,.fc,.about{grid-template-columns:minmax(0,1fr);gap:16px}
+  .fc>.mp{grid-column:1;grid-row:1}.amb{display:none}
+  .mp{height:clamp(220px,60vw,340px)}
+  .nums b{font-size:22px}
+  .mc{grid-template-columns:minmax(0,1fr);row-gap:8px;padding:20px 0}
+  .mc>*{grid-column:1!important;grid-row:auto!important;justify-self:start!important;padding-top:0!important}
+  .mc .n{flex-direction:row;align-items:baseline;gap:10px}
   .facts .r{grid-template-columns:96px minmax(0,1fr);font-size:14px}
-  .fside{display:none}
-  .fcopy{left:16px;right:16px}
-  .fcopy .q{font-size:17px}
-  .fcopy .avail{display:block;font-size:13px}
-  .fcopy .btn small,.mail .cp{display:none}
-  .fcopy .btn{padding:9px 14px;font-size:14px}
-  .rhead .hint{display:none!important}
-  .mail{font-size:7.4vw;letter-spacing:-.035em}
-  .colo{flex-direction:column;align-items:flex-start;padding:20px 16px 28px}
+  .contact{grid-template-columns:minmax(0,1fr)}.cchip{grid-column:1;grid-row:auto;width:min(300px,80%);order:-1}
+  .mail{font-size:7.2vw}.mail .cp{display:none}
+  footer .wrap{flex-direction:column}
 }
-/* reduced motion: no camera flight (one.js shows three still states), reveals are opacity only */
-.rm .grain{animation:none}
-.rm .rv{transform:none}
-.rm .giant .w span{transform:none;transition:none}
-.rm .fadein{transform:none}
-.rm #gl{transition:opacity var(--t-fast) var(--st)}
-.rm .rhead,.rm .lab,.rm #labels svg *,.rm #labels,.rm #paper{transition:opacity var(--t-ui) var(--st)}
+@media (max-width:400px){header nav{gap:12px}.pill{padding:0 12px}}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div id="hscrim"></div>
-<header id="hdr">
-  <a href="#top" data-go="top">Vishal Naveen</a>
-  <nav><a class="u hs" href="#work" data-go="work">Work</a><a class="u hs" href="#experience" data-go="experience">Experience</a><a class="u hs" href="#about" data-go="about">About</a><button class="hs kbd" id="kbtn" aria-label="Open the command palette">⌘K</button><a class="pill solid" href="media/resume.pdf">Résumé</a><i id="ind" aria-hidden="true"></i></nav>
+<a class="skip" href="#experience">Skip to experience</a>
+<header>
+  <div class="wrap">
+    <a href="#top">Vishal Naveen</a>
+    <nav aria-label="Sections"><a href="#experience" data-nav="experience">Experience</a><a href="#work" data-nav="work">Work</a><a class="hide-s" href="#about" data-nav="about">About</a><button class="hide-s kbd" id="kbtn" type="button" aria-label="Open the command palette">⌘K</button><a class="pill solid" href="media/resume.pdf">Résumé</a><i id="ind" aria-hidden="true"></i></nav>
+  </div>
 </header>
 
-<section id="stage" aria-label="Introduction">
-  <div class="pin" id="top">
-    <h1 class="giant" aria-label="Vishal Naveen"><span class="sx" id="giant"><span class="w"><span>Vishal</span></span> <span class="w"><span>Naveen</span></span></span></h1>
-    <canvas id="gl" aria-hidden="true"></canvas>
-    <div class="intro"><div class="sx" id="intro">
-      <div class="k mono fadein d1">Software engineer, University of Florida</div>
-      <p class="fadein d2">I build robotics and machine-learning systems in Python and C++.</p>
-      <p class="nowm fadein d2"><span class="mono">Now</span> Flash Translation Layer Project (C++17), Gator Motorsports (Rust), TEA Lab (PyTorch), ICIC Lab (Python)</p>
-      <div class="cta fadein d3"><a class="pill solid" href="mailto:vishalnaveen@ufl.edu">Get in touch</a><a class="pill line" href="https://github.com/vishal-naveen">GitHub</a><a class="pill line" href="https://www.linkedin.com/in/vishalnaveen/">LinkedIn</a></div>
-    </div></div>
-    <div class="side"><div class="sx" id="side" style="display:grid;gap:14px;justify-items:end">
-      <div class="roles fadein d2"><span class="mono" style="font-size:11px">Now</span><br><a href="#experience" data-go="experience">Undergraduate Researcher, ICIC Lab <span>Python</span></a><br><a href="#experience" data-go="experience">Software Engineer, Flash Translation Layer Project <span>C++17</span></a><br><a href="#experience" data-go="experience">Firmware Engineer, Gator Motorsports <span>Rust</span></a><br><a href="#experience" data-go="experience">Undergraduate Researcher, TEA Lab <span>PyTorch</span></a></div>
-      <div class="roles fadein d3" style="color:var(--mute)">Open to research &amp; internship opportunities</div>
-    </div></div>
-    <div class="cue" id="cue"></div>
-    <div class="rhead" id="rhead"><h2>20,043 lines<br>of my own code.</h2><p>The die is my own source: five repositories, laid out by size. Every line is mine by git blame.</p></div>
-    <div id="labels"><svg id="leaders"></svg></div>
-    <div id="shade"></div>
+<main id="top">
+<div class="hero" id="hero">
+  <h1 class="giant" aria-label="Vishal Naveen"><span class="w"><span>Vishal</span></span> <span class="w"><span>Naveen</span></span></h1>
+  <div class="stagebox">
+    <img class="still" src="media/chip.webp" width="1400" height="700" alt="" fetchpriority="high">
+    <canvas id="gl" aria-label="A 3D processor chip etched with my name. Click it to open the lid; the die underneath is drawn from my own code."></canvas>
+    <div class="tip" id="tip" aria-hidden="true"><b></b><span></span><i>Click to jump to it</i></div>
   </div>
-</section>
+  <p class="hint mono fadein d3" id="hint" aria-live="polite"></p>
+  <div class="intro">
+    <div class="k mono fadein d1">Software engineer, University of Florida</div>
+    <p class="fadein d2">I build robotics and machine-learning systems in Python and C++.</p>
+    <div class="cta fadein d3"><a class="pill solid" href="mailto:vishalnaveen@ufl.edu">Get in touch</a><a class="pill line" href="https://github.com/vishal-naveen">GitHub</a><a class="pill line" href="https://www.linkedin.com/in/vishalnaveen/">LinkedIn</a></div>
+  </div>
+  <div class="side fadein d2"><span class="mono">Now</span>
+    <a href="#x-icic">Undergraduate Researcher, ICIC Lab <span>Python</span></a>
+    <a href="#x-tea">Undergraduate Researcher, TEA Lab <span>PyTorch</span></a>
+    <a href="#x-ftl">Software Engineer, Flash Translation Layer Project <span>C++17</span></a>
+    <a href="#x-gm">Firmware Engineer, Gator Motorsports <span>Rust</span></a>
+    <span class="open">Open to research &amp; internship opportunities</span>
+  </div>
+</div>
 
-<div id="tail">
-<div id="pw">
-<main id="paper">
-  <div class="bar" aria-hidden="true"></div>
-  <div class="wrap">
-  <section id="work">
-    <div class="sh">
-      <div><div class="k mono">3 featured, 3 more</div><h2>Work</h2></div>
+<div class="wrap">
+  <section id="experience" aria-labelledby="h-exp">
+    <div class="sh rv">
+      <div><div class="k mono">7 roles, 4 current</div><h2 id="h-exp">Experience</h2></div>
+      <p>Newest first.</p>
+    </div>
+    <div class="xp"><svg id="rail" aria-hidden="true"></svg><div class="rows" id="rows">
+      <article class="xc rv" id="x-icic" data-now>
+        <div><h3>Undergraduate Researcher</h3><div class="org">ICIC Lab, University of Florida</div><div class="ctx mono">Robot learning, advisor Dr. Jing Du</div>
+          <span class="date now mono">Oct 2026 to now</span>
+          <div class="chips mono"><span>Python</span><span>Franka Panda</span><span>π0.5 VLA</span><span>LeRobot</span><span>RealSense</span><span>NVIDIA DGX</span></div></div>
+        <ul class="b"><li>Co-author, CVPR 2027 submission <b>“Seeing the Object, Reaching for Its Ghost”</b> (under review): robot policies that read an instruction keep reaching for where an object used to be. SNAP re-aims them without retraining.</li>
+          <li>Simulation (LIBERO): success from <b>5.2% to 73.0%</b>. Real robot: mean success from <b>7% to 69%</b>.</li>
+          <li><b>My part:</b> most of the real-robot software on a Franka Panda arm: 100 Hz gamepad teleoperation, two-camera recording, export to LeRobot for fine-tuning, and a live collection dashboard with 137 offline tests.</li>
+          <li>Linked the robot laptop to the lab's DGX GPU server, loaded and served the fine-tuned model, and ran the real-robot trials.</li></ul>
+      </article>
+      <article class="xc rv" id="x-tea" data-now>
+        <div><h3>Undergraduate Researcher</h3><div class="org">TEA Lab, University of Florida</div><div class="ctx mono">Trustworthy Engineered Autonomy Lab, advisor Dr. Ivan Ruchkin</div>
+          <span class="date now mono">Oct 2026 to now</span>
+          <div class="chips mono"><span>PyTorch</span><span>Python</span><span>Slurm on B200 GPUs</span><span>Uncertainty quantification</span></div></div>
+        <ul class="b"><li>Certified, uncertainty-aware 3D perception for self-driving cars: every perception output is sorted into certified, budgeted or withheld trust levels.</li>
+          <li>Trained <b>32 multi-task ResNet-18 models</b> on 342K Waymo images, using ~120 NVIDIA B200 GPU-hours.</li>
+          <li>Cut validation position error by <b>up to 8%</b> over the baseline (5.87 to 5.40 m) with failure detection on par; one run per setting, validation data.</li>
+          <li>Ran training <b>3.5x in parallel</b> with Slurm job arrays inside the lab's 24-GPU limit: a 73 GPU-hour grid in about 21 hours.</li></ul>
+      </article>
+      <article class="xc rv" id="x-ftl" data-now>
+        <div><h3>Software Engineer</h3><div class="org">Flash Translation Layer Project</div><div class="ctx mono">6-engineer team</div>
+          <span class="date now mono">Sep 2026 to now</span>
+          <div class="chips mono"><span>C++17</span><span>CMake</span><span>GoogleTest</span><span>CI</span></div></div>
+        <ul class="b"><li>The software that makes a raw flash chip behave like a disk, in C++17.</li>
+          <li>Team deliverable: a page-mapped flash translation layer for a 1 Gb Winbond SPI NAND chip, with out-of-place writes and in-order page programming.</li>
+          <li><b>My part:</b> the PageFtl tests in the team's differential harness.</li>
+          <li>Taught the team the chip's SPI command protocol.</li></ul>
+      </article>
+      <article class="xc rv" id="x-gm" data-now>
+        <div><h3>Firmware Engineer</h3><div class="org">Gator Motorsports</div><div class="ctx mono">Formula SAE racing team, University of Florida</div>
+          <span class="date now mono">Aug 2026 to now</span>
+          <div class="chips mono"><span>Rust</span><span>no_std</span><span>Embassy</span><span>Cortex-M7/M4</span><span>UDP</span></div></div>
+        <ul class="b"><li>Built the car's <b>real-time telemetry in Rust</b>: bare-metal firmware on a dual-core NXP i.MX RT1176 streaming to a multithreaded server over 1 Gbps Ethernet.</li>
+          <li>Streams live sensor data at <b>10 Hz</b> using under 0.001% of the link, with headroom for hundreds more signals.</li>
+          <li>Brought up a 3-layer network stack: the Ethernet MAC driver, a PHY configured over MDIO, and async IPv4/UDP (embassy-net).</li>
+          <li>The codec is no_std, so one implementation runs on the microcontroller and the server.</li></ul>
+      </article>
+      <article class="xc rv">
+        <div><h3>Algorithm Developer and Beta Tester</h3><div class="org">Pedro Pathing</div><div class="ctx mono">Open-source robotics library</div>
+          <span class="date mono">Jun 2025 to Jan 2026</span>
+          <div class="chips mono"><span>Java</span><span>Bezier curves</span><span>PID control</span></div></div>
+        <ul class="b"><li>Path following for an open-source autonomous navigation library used by <b>2,500+ FTC teams</b>.</li>
+          <li>Implemented path following over multi-order Bezier curves, tuning velocity profiling and PID heading correction.</li>
+          <li>Tested pre-release builds and documented pathing regressions.</li></ul>
+      </article>
+      <article class="xc rv" id="x-usf">
+        <div><h3>Student Researcher</h3><div class="org">University of South Florida</div><div class="ctx mono">Coding theory and reinforcement learning</div>
+          <span class="date mono">2025</span>
+          <div class="chips mono"><span>Python</span><span>stable-baselines3</span><span>DQN</span></div></div>
+        <div><ul class="b"><li>Built a deep Q-network bit-flipping decoder for LDPC codes, the family used in 5G and Wi-Fi, and benchmarked it against greedy bit-flipping and BP+LSD across <b>270 seeded trials</b>.</li>
+          <li>Traced the gap to the parity-check matrix, not the policy.</li></ul>
+          <div class="mini" role="img" aria-label="Syndrome satisfied and codeword recovered, out of 270 trials: DQN 25.9% and 0; bit-flipping 93.7% and 61; BP plus LSD 100% and 46"><div class="lg mono"><span><i style="background:#22A387"></i>syndrome satisfied</span><span><i style="background:#6670F0"></i>codeword recovered</span></div>
+            <div class="r"><span>DQN</span><div class="bars"><div class="b s1" style="--v:25.9"><em>25.9%</em></div><div class="b s2" style="--v:0"><em>0 of 270</em></div></div></div>
+            <div class="r"><span>Bit-flipping</span><div class="bars"><div class="b s1" style="--v:93.7"><em>93.7%</em></div><div class="b s2" style="--v:22.6"><em>61 of 270</em></div></div></div>
+            <div class="r"><span>BP + LSD</span><div class="bars"><div class="b s1" style="--v:100"><em>100%</em></div><div class="b s2" style="--v:17"><em>46 of 270</em></div></div></div></div>
+          <a class="lk" href="https://github.com/vishal-naveen/rl-ldpc-decoding">Repository and 810 trial records</a></div>
+      </article>
+      <article class="xc rv">
+        <div><h3>Software Developer</h3><div class="org">Inc to Inc</div><div class="ctx mono">Production web development</div>
+          <span class="date mono">Jun 2023 to Jul 2025</span>
+          <div class="chips mono"><span>JavaScript</span><span>Node.js</span><span>SQL</span><span>PayPal</span></div></div>
+        <ul class="b"><li>Built <b>3 production websites</b> with one other developer for two Tampa nonprofits (STEAMA, Tampa Youth Basketball Association).</li>
+          <li>Shipped session authentication, class scheduling, PayPal payment and donation flows, and storefronts on a relational SQL schema.</li></ul>
+      </article>
+    </div></div>
+  </section>
+
+  <section id="work" aria-labelledby="h-work">
+    <div class="sh rv">
+      <div><div class="k mono">3 featured, 3 more</div><h2 id="h-work">Work</h2></div>
       <p>Apps, robot learning and agents. Each number comes from the project's own repository.</p>
     </div>
     <div class="feat">
-      <article class="fc" id="p-sixth">
+      <article class="fc rv" id="p-sixth">
         <div>
-          <div class="eb mono"><b>01</b><span>iOS app, on-device ML</span><span>Sep 2023 to Jun 2025</span><span>Solo</span></div>
+          <div class="eb mono"><span>iOS app, on-device ML</span><span>Sep 2023 to Jun 2025</span><span>Solo</span></div>
           <h3>Sixth Sense</h3>
           <p class="one">An iOS navigation aid for blind and low-vision users: on-device obstacle detection, distance from a single camera, and spoken AR routes.</p>
           <div class="nums"><div><b>15 fps</b><span>YOLOv8n on an iPhone 14 Pro</span></div><div><b>12.7 MB</b><span>Core ML model, fully on device</span></div><div><b>3rd</b><span>2024 Congressional App Challenge</span></div></div>
           <div class="chips mono"><span>Swift</span><span>Core ML</span><span>YOLOv8</span><span>ARKit</span><span>OpenCV</span></div>
           <div class="links"><a class="solid" href="https://github.com/vishal-naveen/Sixth-Sense">Repository</a></div>
-          <div class="proof mono">2,251 lines of mine</div>
         </div>
-        <div class="mp"><div class="pane">
-          <div class="demo phones"><img src="media/detection-dark.jpg" alt="Detection with distance"><img src="media/navigation.jpg" alt="Turn-by-turn navigation"><img src="media/mapping.jpg" alt="Recording a route"></div>
-        </div></div>
+        <div class="amb" style="--img:url(media/navigation.jpg)"></div><div class="mp phones"><img loading="lazy" src="media/detection-dark.jpg" alt="Detection with distance"><img loading="lazy" src="media/navigation.jpg" alt="Turn-by-turn navigation"><img loading="lazy" src="media/mapping.jpg" alt="Recording a route"></div>
       </article>
-
       <article class="fc rv" id="p-tvla">
         <div>
-          <div class="eb mono"><b>02</b><span>Robot learning</span><span>Jun 2026 to now</span></div>
+          <div class="eb mono"><span>Robot learning</span><span>Jun 2026 to now</span></div>
           <h3>TactileVLA-Edge</h3>
           <p class="one">Imitation-learning policies for robot manipulation on a sub-$300 SO-101 arm, vision only. Both succeeded in a cell held out of training.</p>
           <div class="nums"><div><b>160</b><span>teleoperated demonstrations, 67,693 frames</span></div><div><b>B2</b><span>held-out cell where both policies succeeded</span></div><div><b>&lt;$300</b><span>SO-101 leader-follower rig</span></div></div>
           <div class="chips mono"><span>PyTorch</span><span>LeRobot</span><span>ACT</span><span>SmolVLA</span><span>Python</span></div>
           <div class="links"><a class="solid" href="https://github.com/vishal-naveen/TactileVLA-Edge">Repository</a><a href="https://vishal-naveen.github.io/tactilevla-demo/">Live demo</a><a href="https://vishal-naveen.github.io/TactileVLA-Edge/">Project site</a></div>
-          <div class="proof mono">5,029 lines of mine</div>
         </div>
-        <div class="mp"><div class="pane">
-          <div class="demo par"><video data-inview src="media/act-crop.mp4" poster="media/act-crop.jpg" muted loop playsinline preload="none" aria-label="The ACT policy grasping in the held-out cell B2"></video><span class="cap mono">ACT policy, held-out cell B2, real robot</span></div>
-        </div></div>
+        <div class="amb" style="--img:url(media/act-crop.jpg)"></div><div class="mp"><video src="media/act-crop.mp4" poster="media/act-crop.jpg" muted loop playsinline preload="none" data-inview aria-label="The ACT policy grasping in the held-out cell B2"></video><span class="cap mono">ACT policy, held-out cell B2, real robot</span></div>
       </article>
-
       <article class="fc rv" id="p-zero">
         <div>
-          <div class="eb mono"><b>03</b><span>Agents and robotics</span><span>Oct 2026</span><span>SwampHacks XII, team of 4</span></div>
+          <div class="eb mono"><span>Agents and robotics</span><span>Oct 2026</span><span>SwampHacks XII, team of 4</span></div>
           <h3>Zer0Sh0t</h3>
           <p class="one">A voice-controlled, low-cost robot arm that zero-shots new tasks: it turns spoken requests into pick, place and point actions with no task-specific demonstrations.</p>
           <div class="nums"><div><b>3rd of 141</b><span>teams, Best Overall at SwampHacks XII</span></div><div><b>0</b><span>task-specific demonstrations or retraining</span></div><div><b>Team of 4</b><span>I wrote the code</span></div></div>
           <div class="chips mono"><span>Claude tool use</span><span>Gemini Robotics-ER</span><span>ElevenLabs</span><span>Inverse kinematics</span><span>AprilTags</span></div>
           <div class="links"><a class="solid" href="https://devpost.com/software/beforehand-eliv7x">Devpost</a></div>
         </div>
-        <div class="mp"><div class="pane"><div class="demo contain par"><img loading="lazy" src="media/zeroshot-planner-ui.jpg" alt="Zer0Sh0t's planner interface"></div></div></div>
+        <div class="amb" style="--img:url(media/zeroshot-planner-ui.jpg)"></div><div class="mp contain"><img loading="lazy" src="media/zeroshot-planner-ui.jpg" alt="Zer0Sh0t's planner interface"></div>
       </article>
     </div>
-
-    <div class="morehead mono rv"><span>More projects</span></div>
+    <div class="morehead mono rv">More projects</div>
     <div class="more">
-      <article class="mc rv"><div class="eb mono">XR, 3D graphics &nbsp; Gator Hack V</div><h4>Lucid Dreams</h4><p>Turns a video or a few photos into a photoreal, life-size 3D person in your room, in Meta Quest passthrough, opened from one link. Team of 4.</p>
+      <article class="mc rv"><div class="eb mono">XR, 3D graphics<br>Gator Hack V</div><h4>Lucid Dreams</h4><p>Turns a video or a few photos into a photoreal, life-size 3D person in your room, in Meta Quest passthrough, opened from one link. Team of 4.</p>
         <div class="n"><b>Top 10</b><span>finalist, Gator Hack V</span></div><div class="chips mono"><span>TypeScript</span><span>three.js</span><span>WebXR</span><span>gsplat</span></div><a class="go" href="https://devpost.com/software/lucid-dreams-j1ycoi">Devpost</a></article>
-      <article class="mc rv"><div class="eb mono">FTC robot code &nbsp; 2024 to 2025</div><h4>Midnight: Into the Deep</h4><p>Competition robot code: a five-specimen autonomous on Pedro Pathing for the 2024-25 FTC season.</p>
+      <article class="mc rv"><div class="eb mono">FTC robot code<br>2024 to 2025</div><h4>Midnight: Into the Deep</h4><p>Competition robot code: a five-specimen autonomous on Pedro Pathing for the 2024-25 FTC season.</p>
         <div class="n"><b>105 pts</b><span>autonomous, Florida Championship 2025</span></div><div class="chips mono"><span>Java</span><span>Pedro Pathing</span><span>FTC SDK</span></div><a class="go" href="https://github.com/vishal-naveen/Midnight_IntoTheDeep">Repository</a></article>
-      <article class="mc rv"><div class="eb mono">FTC robot code &nbsp; 2025 to 2026</div><h4>Midnight: DECODE</h4><p>A flywheel shooter with Limelight targeting and six autonomous routines for the 2025-26 FTC season.</p>
+      <article class="mc rv"><div class="eb mono">FTC robot code<br>2025 to 2026</div><h4>Midnight: DECODE</h4><p>A flywheel shooter with Limelight targeting and six autonomous routines for the 2025-26 FTC season.</p>
         <div class="n"><b>6</b><span>autonomous routines, 12 tuning opmodes</span></div><div class="chips mono"><span>Java</span><span>Limelight</span><span>Pedro Pathing</span></div><a class="go" href="https://github.com/vishal-naveen/Midnight_Decode">Repository</a></article>
     </div>
   </section>
 
-  <section id="experience">
-    <div class="sh rv wr">
-      <div><div class="k mono">7 roles, 4 current</div><h2>Experience</h2></div>
-      <p>Newest first.</p>
-    </div>
-    <div class="xp">
-      <svg id="rail" aria-hidden="true"></svg>
-      <div class="rows" id="rows">
-        <article class="xc rv" data-now>
-          <div><div class="top"><span class="mg">ICIC</span><div><h3>Undergraduate Researcher</h3><div class="org">ICIC Lab, University of Florida</div><div class="ctx mono">Robot learning, advisor Dr. Jing Du</div></div></div>
-            <span class="date now mono">Oct 2026 to now</span>
-            <div class="chips mono"><span>Python</span><span>Franka Panda</span><span>π0.5 VLA</span><span>LeRobot</span><span>RealSense</span><span>NVIDIA DGX</span></div></div>
-          <ul><li>Co-author, CVPR 2027 submission <b>“Seeing the Object, Reaching for Its Ghost”</b> (under review): robot policies that read an instruction keep reaching for where an object used to be. SNAP re-aims them without retraining.</li>
-            <li>Simulation (LIBERO): success from <b>5.2% to 73.0%</b>. Real robot: mean success from <b>7% to 69%</b>.</li>
-            <li><b>My part:</b> most of the real-robot software on a Franka Panda arm: 100 Hz gamepad teleoperation, two-camera recording, export to LeRobot for fine-tuning, and a live collection dashboard with 137 offline tests.</li>
-            <li>Linked the robot laptop to the lab's DGX GPU server, loaded and served the fine-tuned model, and ran the real-robot trials.</li></ul>
-        </article>
-        <article class="xc rv" data-now>
-          <div><div class="top"><span class="mg">TEA</span><div><h3>Undergraduate Researcher</h3><div class="org">TEA Lab, University of Florida</div><div class="ctx mono">Trustworthy Engineered Autonomy Lab, advisor Dr. Ivan Ruchkin</div></div></div>
-            <span class="date now mono">Oct 2026 to now</span>
-            <div class="chips mono"><span>PyTorch</span><span>Python</span><span>Slurm on B200 GPUs</span><span>Uncertainty quantification</span></div></div>
-          <ul><li>Certified, uncertainty-aware 3D perception for self-driving cars: every perception output is sorted into certified, budgeted or withheld trust levels.</li>
-            <li>Trained <b>32 multi-task ResNet-18 models</b> on 342K Waymo images, using ~120 NVIDIA B200 GPU-hours.</li>
-            <li>Cut validation position error by <b>up to 8%</b> over the baseline (5.87 to 5.40 m) with failure detection on par; one run per setting, validation data.</li>
-            <li>Ran training <b>3.5x in parallel</b> with Slurm job arrays inside the lab's 24-GPU limit: a 73 GPU-hour grid in about 21 hours.</li></ul>
-        </article>
-        <article class="xc rv" data-now>
-          <div><div class="top"><span class="mg">FTL</span><div><h3>Software Engineer</h3><div class="org">Flash Translation Layer Project</div><div class="ctx mono">6-engineer team</div></div></div>
-            <span class="date now mono">Sep 2026 to now</span>
-            <div class="chips mono"><span>C++17</span><span>CMake</span><span>GoogleTest</span><span>CI</span></div></div>
-          <ul><li>The software that makes a raw flash chip behave like a disk, in C++17.</li>
-            <li>Team deliverable: a page-mapped flash translation layer for a 1 Gb Winbond SPI NAND chip, with out-of-place writes and in-order page programming.</li>
-            <li><b>My part:</b> the PageFtl tests in the team's differential harness.</li>
-            <li>Taught the team the chip's SPI command protocol.</li></ul>
-        </article>
-        <article class="xc rv" data-now>
-          <div><div class="top"><span class="mg">GM</span><div><h3>Firmware Engineer</h3><div class="org">Gator Motorsports</div><div class="ctx mono">Formula SAE racing team, University of Florida</div></div></div>
-            <span class="date now mono">Aug 2026 to now</span>
-            <div class="chips mono"><span>Rust</span><span>no_std</span><span>Embassy</span><span>Cortex-M7/M4</span><span>UDP</span></div></div>
-          <ul><li>Built the car's <b>real-time telemetry in Rust</b>: bare-metal firmware on a dual-core NXP i.MX RT1176 streaming to a multithreaded server over 1 Gbps Ethernet.</li>
-            <li>Streams live sensor data at <b>10 Hz</b> using under 0.001% of the link, with headroom for hundreds more signals.</li>
-            <li>Brought up a 3-layer network stack: the Ethernet MAC driver, a PHY configured over MDIO, and async IPv4/UDP (embassy-net).</li>
-            <li>The codec is no_std, so one implementation runs on the microcontroller and the server.</li></ul>
-        </article>
-        <article class="xc rv">
-          <div><div class="top"><span class="mg">PP</span><div><h3>Algorithm Developer and Beta Tester</h3><div class="org">Pedro Pathing</div><div class="ctx mono">Open-source robotics library</div></div></div>
-            <span class="date mono">Jun 2025 to Jan 2026</span>
-            <div class="chips mono"><span>Java</span><span>Bezier curves</span><span>PID control</span></div></div>
-          <ul><li>Path following for an open-source autonomous navigation library used by <b>2,500+ FTC teams</b>.</li>
-            <li>Implemented path following over multi-order Bezier curves, tuning velocity profiling and PID heading correction.</li>
-            <li>Tested pre-release builds and documented pathing regressions.</li></ul>
-        </article>
-        <article class="xc rv">
-          <div><div class="top"><span class="mg">USF</span><div><h3>Student Researcher</h3><div class="org">University of South Florida</div><div class="ctx mono">Coding theory and reinforcement learning</div></div></div>
-            <span class="date mono">2025</span>
-            <div class="chips mono"><span>Python</span><span>stable-baselines3</span><span>DQN</span></div></div>
-          <div><ul><li>Built a deep Q-network bit-flipping decoder for LDPC codes, the family used in 5G and Wi-Fi, and benchmarked it against greedy bit-flipping and BP+LSD across <b>270 seeded trials</b>.</li>
-            <li>Traced the gap to the parity-check matrix, not the policy.</li></ul>
-            <div class="mini"><div class="lg mono"><span><i style="background:#22A387"></i>syndrome satisfied</span><span><i style="background:#6670F0"></i>codeword recovered</span></div>
-              <div class="r"><span>DQN</span><div class="bars"><div class="b s1" style="--v:25.9"><em>25.9%</em></div><div class="b s2" style="--v:0"><em>0 of 270</em></div></div></div>
-              <div class="r"><span>Bit-flipping</span><div class="bars"><div class="b s1" style="--v:93.7"><em>93.7%</em></div><div class="b s2" style="--v:22.6"><em>61 of 270</em></div></div></div>
-              <div class="r"><span>BP + LSD</span><div class="bars"><div class="b s1" style="--v:100"><em>100%</em></div><div class="b s2" style="--v:17"><em>46 of 270</em></div></div></div></div>
-            <a class="lk" href="https://github.com/vishal-naveen/rl-ldpc-decoding">Repository and 810 trial records</a></div>
-        </article>
-        <article class="xc rv">
-          <div><div class="top"><span class="mg">I2I</span><div><h3>Software Developer</h3><div class="org">Inc to Inc</div><div class="ctx mono">Production web development</div></div></div>
-            <span class="date mono">Jun 2023 to Jul 2025</span>
-            <div class="chips mono"><span>JavaScript</span><span>Node.js</span><span>SQL</span><span>PayPal</span></div></div>
-          <ul><li>Built <b>3 production websites</b> with one other developer for two Tampa nonprofits (STEAMA, Tampa Youth Basketball Association).</li>
-            <li>Shipped session authentication, class scheduling, PayPal payment and donation flows, and storefronts on a relational SQL schema.</li></ul>
-        </article>
+  <section id="about" aria-labelledby="h-about">
+    <div class="about">
+      <div class="rv"><div class="k mono">About</div><h2 id="h-about">Electrical engineering on paper, software in practice. <em>I like problems where the code has to be right because something real depends on it.</em></h2></div>
+      <div class="facts">
+        <div class="r rv"><span class="fk mono">Education</span><span><b>University of Florida</b>, B.S. Electrical Engineering, Minor in Computer Science. May 2029. GPA 4.0.</span></div>
+        <div class="r rv"><span class="fk mono">Honors</span><span>Honors Program, Florida Academic Scholars, UF Honors Scholarship</span></div>
+        <div class="r rv"><span class="fk mono">Languages</span><span>Python, C++17, Rust, Swift, TypeScript, Java</span></div>
+        <div class="r rv"><span class="fk mono">Systems</span><span>Rust no_std and Embassy, multithreading, Ethernet and UDP, GoogleTest</span></div>
+        <div class="r rv"><span class="fk mono">ML</span><span>PyTorch, LeRobot, stable-baselines3, Hugging Face, Slurm on B200 GPUs</span></div>
+        <div class="r rv"><span class="fk mono">Apps</span><span>three.js, Node.js, SQL, ARKit, Core ML</span></div>
       </div>
     </div>
+    <div class="contact rv" id="contact">
+      <div><div class="k mono">Contact</div><p class="q">Have a role in mind? Email me.</p>
+        <button class="mail" id="mail" type="button" title="Copy the address"><u>vishalnaveen@ufl.edu</u><span class="cp mono">Click to copy</span></button></div>
+      <img class="cchip" src="media/chip.webp" alt="" loading="lazy" width="1400" height="700"><div class="cta"><a class="pill solid" href="media/resume.pdf">Résumé</a><a class="pill line" href="https://github.com/vishal-naveen">GitHub</a><a class="pill line" href="https://www.linkedin.com/in/vishalnaveen/">LinkedIn</a></div>
+    </div>
   </section>
-  </div>
+</div>
 </main>
-<div id="rsp" aria-hidden="true"></div>
-</div>
-<div id="frame" aria-hidden="true"></div>
-
-<div id="closer">
-  <div class="bar" aria-hidden="true"></div>
-  <section class="about" id="about">
-    <div class="rv wr"><div class="k mono">About</div><h2>Electrical engineering on paper, software in practice. <em>I like problems where the code has to be right because something real depends on it.</em></h2></div>
-    <div class="facts">
-      <div class="r"><span class="fk mono">Education</span><span><b>University of Florida</b>, B.S. Electrical Engineering, Minor in Computer Science. May 2029. GPA 4.0.</span></div>
-      <div class="r"><span class="fk mono">Honors</span><span>Honors Program, Florida Academic Scholars, UF Honors Scholarship</span></div>
-      <div class="r"><span class="fk mono">Languages</span><span>Python, C++17, Rust, Swift, TypeScript, Java</span></div>
-      <div class="r"><span class="fk mono">Systems</span><span>Rust no_std and Embassy, multithreading, Ethernet and UDP, GoogleTest</span></div>
-      <div class="r"><span class="fk mono">ML</span><span>PyTorch, LeRobot, stable-baselines3, Hugging Face, Slurm on B200 GPUs</span></div>
-      <div class="r"><span class="fk mono">Apps</span><span>three.js, Node.js, SQL, ARKit, Core ML</span></div>
-    </div>
-  </section>
-</div>
-<!-- the finale (TRANSITIONS.md section 7): the same chip, in a second pin; the die wakes, the lid seats, the camera
-     returns to the hero pose and the name rises behind it. one.js moves the one WebGL canvas in here. -->
-<section class="finale" id="contact" aria-label="Contact">
-  <div class="pin2" id="fpin">
-    <div class="fveil" id="fveil"></div><div class="fscrim" id="fscrim"></div>
-    <h2 class="giant fname" aria-hidden="true"><span class="sx" id="fname"><span class="w"><span>Vishal</span></span> <span class="w"><span>Naveen</span></span></span></h2>
-    <div class="fcopy" id="fcopy">
-      <div class="k mono">Contact</div>
-      <p class="q">Have a role in mind? Email me.</p>
-      <button class="mail" id="mail" title="Click to copy"><u>vishalnaveen@ufl.edu</u><span class="cp mono">Click to copy</span></button>
-      <div class="acts">
-        <a class="btn solid" href="media/resume.pdf">Résumé <small>datasheet, 1 page, PDF</small></a>
-        <a class="btn" href="https://github.com/vishal-naveen">GitHub</a><a class="btn" href="https://www.linkedin.com/in/vishalnaveen/">LinkedIn</a>
-      </div>
-      <p class="avail">Open to research &amp; internship opportunities. Gainesville, FL.</p>
-    </div>
-    <div class="fside" id="fside"><div>Open to research &amp; internship opportunities</div><div class="mute">Gainesville, FL</div></div>
-  </div>
-</section>
-<footer class="colo">
-  <div>The chip on this site is built from 20,043 lines of my own code, counted by git blame.<br>Set in Switzer and Geist Mono.</div>
-  <div><a href="https://github.com/vishal-naveen">GitHub</a><a href="https://www.linkedin.com/in/vishalnaveen/">LinkedIn</a><a href="media/resume.pdf">Résumé</a></div>
-</footer>
-</div>
-
-<div class="vig"></div>
-<div class="grain"></div>
+<footer><div class="wrap"><div>Vishal Naveen, Gainesville, FL. The die on the chip is drawn from 20,043 lines of my own code. Set in Switzer and Geist Mono.</div><div><a href="https://github.com/vishal-naveen">GitHub</a><a href="https://www.linkedin.com/in/vishalnaveen/">LinkedIn</a><a href="media/resume.pdf">Résumé</a></div></div></footer>
+<div class="grain" aria-hidden="true"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"><b>Copied</b> vishalnaveen@ufl.edu</div>
 <div id="pk" role="dialog" aria-modal="true" aria-label="Command palette"><div class="pal">
   <input id="pkq" placeholder="Jump to a project, a role, or an action" autocomplete="off" spellcheck="false">
   <div class="list" id="pkl"></div>
   <div class="ft mono"><span>Up/Down to move</span><span>Enter to open</span><span>Esc to close</span></div>
 </div></div>
-<script type="module" src="one.js"></script>
+<script type="module" src="site.js"></script>
 </body>
 </html>
