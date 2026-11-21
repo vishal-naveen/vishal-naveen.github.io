@@ -1,7 +1,9 @@
-// chip.js: the v7 chip (v7-chip/one.js lines 14-323: renderer, studio light, lid, substrate, caps, die) as a hero-only
-// toy. No scroll story: it floats, leans toward the cursor, and a click lifts the lid so the die powers on. With the lid
-// off, the die is a map of the five repositories it is drawn from; hovering one names it, clicking jumps to its card.
-// The die texture is baked (tools/bakedie.mjs), so the page ships a picture of the code, not the source files.
+// chip.js: the v7 chip (v7-chip/one.js: renderer, studio light, lid, substrate, caps) as the hero of v8.
+// Closed: it floats in the hero, leans toward the cursor, tilts away as you scroll past, and peeks its lid every few
+// seconds until someone opens it. Open (11-20: "incorporate a lot more projects into the chip since it can zoom and take
+// over the whole screen"): the lid lifts, the canvas takes over the screen, and the die is a map of every role and project
+// on the page, one labelled block each (drawn here from the page's own cards, so it never drifts from them). Hover lights a
+// block; picking one flies the camera onto it and the page shows its details beside it.
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 
@@ -11,7 +13,7 @@ const seg = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
 const easeIO = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
-export async function startChip({ canvas, hero, still, hint, tip, rm, go }) {
+export async function startChip({ canvas, hero, rm, blocks, on }) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.toneMapping = THREE.AgXToneMapping; renderer.toneMappingExposure = 1.12; renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -64,8 +66,64 @@ export async function startChip({ canvas, hero, still, hint, tip, rm, go }) {
     const S = 256, cv = Object.assign(document.createElement("canvas"), { width: S, height: S }), g = cv.getContext("2d"), grd = g.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
     grd.addColorStop(0, "rgba(0,0,0,.85)"); grd.addColorStop(0.45, "rgba(0,0,0,.45)"); grd.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = grd; g.fillRect(0, 0, S, S); return new THREE.CanvasTexture(cv);
   }
-  const [dieTex, DIEJ] = await Promise.all([new THREE.TextureLoader().loadAsync("media/die.webp"), fetch("media/die.json").then((r) => r.json())]);
-  dieTex.colorSpace = THREE.SRGBColorSpace; dieTex.anisotropy = 16;
+  // ---- the die: every role and project as a block (squarified by weight), with standard-cell texture and an etched label
+  const INK = { research: [142, 154, 230], experience: [214, 204, 188], project: [111, 195, 168] };
+  function squarify(items, x, y, w, h) {
+    const total = items.reduce((s, i) => s + i.v, 0), kk = (w * h) / total;
+    const nodes = items.map((i) => ({ ...i, a: i.v * kk })).sort((a, b) => b.a - a.a);
+    const out = []; let row = [], rx = x, ry = y, rw = w, rh = h;
+    const worst = (r, side) => { const s = r.reduce((a, n) => a + n.a, 0), mx = Math.max(...r.map((n) => n.a)), mn = Math.min(...r.map((n) => n.a)); return Math.max((side * side * mx) / (s * s), (s * s) / (side * side * mn)); };
+    const lay = (r) => { const s = r.reduce((a, n) => a + n.a, 0);
+      if (rw >= rh) { const cw = s / rh; let yy = ry; for (const n of r) { const ch = n.a / cw; out.push({ ...n, x: rx, y: yy, w: cw, h: ch }); yy += ch; } rx += cw; rw -= cw; }
+      else { const ch = s / rw; let xx = rx; for (const n of r) { const cw = n.a / ch; out.push({ ...n, x: xx, y: ry, w: cw, h: ch }); xx += cw; } ry += ch; rh -= ch; } };
+    let i = 0;
+    while (i < nodes.length) { const side = Math.min(rw, rh), n = nodes[i]; if (!row.length || worst([...row, n], side) <= worst(row, side)) { row.push(n); i++; } else { lay(row); row = []; } }
+    if (row.length) lay(row);
+    return out;
+  }
+  const TS = matchMedia("(max-width: 860px)").matches ? 2048 : 4096, M0 = TS * 0.04, GAP = TS * 0.006;
+  const REG = squarify(blocks.map((b) => ({ v: b.weight, b })), M0, M0, TS - 2 * M0, TS - 2 * M0).map((r) => ({ ...r.b, x: r.x + GAP / 2, y: r.y + GAP / 2, w: r.w - GAP, h: r.h - GAP }));
+  function dieMap() {
+    const cv = Object.assign(document.createElement("canvas"), { width: TS, height: TS }), g = cv.getContext("2d"), u = TS / 4096, R = rng(11);
+    g.fillStyle = "#0c0d11"; g.fillRect(0, 0, TS, TS);
+    // bond pads and the corner mark
+    g.fillStyle = "#b99a62";
+    for (let q = 90 * u; q < TS - 90 * u; q += 70 * u) { g.fillRect(q, 60 * u, 40 * u, 48 * u); g.fillRect(q, TS - 108 * u, 40 * u, 48 * u); g.fillRect(60 * u, q, 48 * u, 40 * u); g.fillRect(TS - 108 * u, q, 48 * u, 40 * u); }
+    for (const rg of REG) {
+      const ink = INK[rg.cat], c = (a) => `rgba(${ink[0]},${ink[1]},${ink[2]},${a})`, pad = Math.min(rg.w, rg.h) * 0.07 + 18 * u;
+      g.fillStyle = `rgb(${ink[0] * 0.06 | 0},${ink[1] * 0.06 | 0},${ink[2] * 0.06 | 0})`; g.fillRect(rg.x, rg.y, rg.w, rg.h);
+      // standard cells: rows of small rects, like a placed-and-routed block
+      const rh = 15 * u;
+      for (let y = rg.y + 10 * u; y < rg.y + rg.h - rh; y += rh + 3 * u) {
+        let x = rg.x + 10 * u;
+        while (x < rg.x + rg.w - 14 * u) { const w = (6 + R() * 42) * u; g.fillStyle = c(0.05 + R() * 0.13); g.fillRect(x, y, Math.min(w, rg.x + rg.w - 10 * u - x), rh); x += w + (2 + R() * 4) * u; }
+      }
+      // a memory macro in the bigger blocks
+      if (rg.w > TS * 0.2 && rg.h > TS * 0.16) { const mw = rg.w * 0.32, mh = rg.h * 0.34, mx = rg.x + rg.w - mw - pad, my = rg.y + rg.h - mh - pad, cell = 11 * u;
+        g.fillStyle = "#0b0c10"; g.fillRect(mx - 8 * u, my - 8 * u, mw + 16 * u, mh + 16 * u);
+        for (let yy = my; yy < my + mh; yy += cell) for (let xx = mx; xx < mx + mw; xx += cell) { g.fillStyle = c(0.12 + R() * 0.12); g.fillRect(xx, yy, cell - 3 * u, cell - 3 * u); }
+        g.strokeStyle = c(0.5); g.lineWidth = 3 * u; g.strokeRect(mx - 8 * u, my - 8 * u, mw + 16 * u, mh + 16 * u); }
+      // the etched label, on a quiet plate so it reads at full screen
+      let ft = Math.min(TS * 0.036, rg.w * 0.1, rg.h * 0.2);
+      g.font = `600 ${ft}px Switzer`; while (g.measureText(rg.title).width > rg.w - 2 * pad && ft > TS * 0.012) { ft *= 0.94; g.font = `600 ${ft}px Switzer`; }
+      const fk = Math.max(TS * 0.0062, ft * 0.3), fs = ft * 0.56, lw = Math.min(rg.w - pad, Math.max(g.measureText(rg.title).width, rg.kicker.length * fk * 0.62, rg.stat.length * fs * 0.52) + pad * 1.2);
+      const lh = fk * 1.9 + ft * 1.05 + (rg.stat ? fs * 1.5 : 0) + pad * 0.6;
+      g.fillStyle = `rgba(${ink[0] * 0.05 | 0},${ink[1] * 0.05 | 0},${ink[2] * 0.05 | 0},0.93)`; g.fillRect(rg.x + 6 * u, rg.y + 6 * u, lw, lh);
+      g.textBaseline = "top";
+      g.fillStyle = c(0.75); g.font = `500 ${fk}px "Geist Mono"`; g.fillText(rg.kicker.toUpperCase(), rg.x + pad * 0.6, rg.y + pad * 0.6, rg.w - pad);
+      g.fillStyle = c(1); g.font = `600 ${ft}px Switzer`; g.fillText(rg.title, rg.x + pad * 0.6, rg.y + pad * 0.6 + fk * 1.9);
+      if (rg.stat) { g.fillStyle = "rgba(239,231,218,.88)"; g.font = `500 ${fs}px Switzer`; g.fillText(rg.stat, rg.x + pad * 0.6, rg.y + pad * 0.6 + fk * 1.9 + ft * 1.12, rg.w - pad); }
+      g.strokeStyle = c(0.85); g.lineWidth = 5 * u; g.strokeRect(rg.x + 2.5 * u, rg.y + 2.5 * u, rg.w - 5 * u, rg.h - 5 * u);
+    }
+    g.font = `500 ${40 * u}px "Geist Mono"`; g.fillStyle = "rgba(230,215,180,.7)"; g.textBaseline = "alphabetic"; g.fillText(`VN29 (C) 2026  ${REG.length} BLOCKS  EVERY ROLE AND PROJECT`, TS - 1240 * u, TS - 18 * u);
+    const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 16; return t;
+  }
+  await Promise.all(['600 120px Switzer', '500 60px Switzer', '500 40px "Geist Mono"'].map((f) => document.fonts.load(f))).catch(() => {});
+  // the real die (a 4096 canvas) is drawn after the first frame, when the browser is idle, or at once on open; until then the
+  // lid covers a plain dark die, so the chip appears sooner
+  const dieTex = new THREE.DataTexture(new Uint8Array([12, 13, 17, 255]), 1, 1); dieTex.colorSpace = THREE.SRGBColorSpace; dieTex.needsUpdate = true;
+  let dieReady = false;
+  const loadDie = () => { if (dieReady) return; dieReady = true; const t = dieMap(); dieMat.map = dieMat.emissiveMap = t; dieMat.needsUpdate = true; };
 
   // ---- the chip, as v7
   const chip = new THREE.Group(); scene.add(chip);
@@ -100,6 +158,7 @@ export async function startChip({ canvas, hero, still, hint, tip, rm, go }) {
   const shadow = new THREE.Mesh(new THREE.PlaneGeometry(9, 9), new THREE.MeshBasicMaterial({ map: shadowTex(), transparent: true, depthWrite: false, opacity: 0.5 }));
   shadow.rotation.x = -Math.PI / 2; shadow.position.y = -0.85; scene.add(shadow);
 
+
   // ---- the die powers on as a wave from its front edge, behind the leaving lid (v7 WAKE, trimmed); uHot lights one block
   const WAKE = { uWake: { value: -0.16 }, uBand: { value: 1.3 }, uHot: { value: new THREE.Vector4() }, uHotA: { value: 0 } };
   dieMat.onBeforeCompile = (sh) => {
@@ -111,100 +170,120 @@ float inR(vec2 q, vec4 r, float e) { return smoothstep(r.x - e, r.x + e, q.x) * 
   { vec2 q = vEmissiveMapUv; float d = q.y;
     float on = smoothstep(d, d + 0.14, uWake), band = exp(-pow((uWake - d - 0.07) / 0.035, 2.0));
     totalEmissiveRadiance *= on * (1.0 + uBand * band);
-    totalEmissiveRadiance *= mix(1.0 - 0.5 * uHotA, 1.0 + 0.6 * uHotA, inR(q, uHot, 0.0015)); }`);
+    totalEmissiveRadiance *= mix(1.0 - 0.45 * uHotA, 1.0 + 0.7 * uHotA, inR(q, uHot, 0.0015)); }`);
   };
-  // the hovered block: an accent outline + faint fill on the die (v7's map)
+  // the lit block: an accent outline + faint fill on the die
   const hotG = new THREE.Group(), hotFill = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0x8e9ae6, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
   hotFill.rotation.x = -Math.PI / 2;
-  const hotLine = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[-0.5, -0.5], [0.5, -0.5], [0.5, 0.5], [-0.5, 0.5]].map(([x, z]) => new THREE.Vector3(x, 0, z))), new THREE.LineBasicMaterial({ color: 0xb4bdff, transparent: true, opacity: 0, depthWrite: false }));
-  hotG.add(hotFill, hotLine); hotG.position.y = DIE_Y + 0.0012; hotG.visible = false; chip.add(hotG);
-  const TS = DIEJ.ts, REG = DIEJ.regions;
-  const regionAt = (u, v) => { const px = u * TS, py = (1 - v) * TS; return REG.find((r) => px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h) || null; };
+  const hotLine = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[-0.5, -0.5], [0.5, -0.5], [0.5, 0.5], [-0.5, 0.5]].map(([x, z]) => new THREE.Vector3(x, 0, z))), new THREE.LineBasicMaterial({ color: 0xc3caff, transparent: true, opacity: 0, depthWrite: false }));
+  hotG.add(hotFill, hotLine); hotG.visible = false; chip.add(hotG);
+  const regionAt = (uu, vv) => { const px = uu * TS, py = (1 - vv) * TS; return REG.find((r) => px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h) || null; };
+  const center = (r) => [((r.x + r.w / 2) / TS - 0.5) * DIE, ((r.y + r.h / 2) / TS - 0.5) * DIE];
 
-  // ---- camera rig: hero pose, and a closer, higher pose once the lid is off
-  const rig = { R: 16, pitch: 27, yaw: -24, ty: 0 };
-  let W = 1, H = 1, aspect = 1, phone = false, heroR = 16, openR = 10, heroTy = 0.6;
+  // ---- camera rig: every parameter chases a target (time-based), so hero, overview and block views blend into each other
+  const rig = { R: 16, pitch: 27, yaw: -24, tx: 0, ty: 0, tz: 0, off: 0 }, tgt = { ...rig };
+  let W = 1, H = 1, aspect = 1, phone = false, heroR = 16, heroTy = 0.6, panelPx = 0;
   const tanH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
   const radiusFor = (size, frac) => size / (frac * 2 * tanH * Math.min(aspect, 1.9));
+  const fitR = (w, h, fw, fh) => Math.max(h / (fh * 2 * tanH), w / (fw * 2 * tanH * aspect)); // distance that fits w x h in fw x fh of the view
   function resize() {
     W = canvas.clientWidth; H = canvas.clientHeight; aspect = W / H; phone = W < 820;
     renderer.setSize(W, H, false); camera.aspect = aspect; camera.updateProjectionMatrix();
-    heroR = phone ? radiusFor(4.5, 0.9) : radiusFor(4.5, 0.42); openR = phone ? radiusFor(DIE, 0.52) : radiusFor(DIE, 0.24);
+    heroR = phone ? radiusFor(4.5, 0.9) : radiusFor(4.5, 0.42);
     heroTy = phone ? -0.05 * heroR / 16 : 0.04 * heroR / 16;
   }
   new ResizeObserver(resize).observe(canvas); resize();
 
-  // ---- input: pointer lean, hover over the chip, click to open / close, hover a block when open
+  // ---- input
   const ptr = { x: 0, y: 0, sx: 0, sy: 0, cx: -1, cy: -1, in: false };
   const HOVER = matchMedia("(hover: hover)").matches;
-  hero.addEventListener("pointermove", (e) => { const r = canvas.getBoundingClientRect(); ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.y = ((e.clientY - r.top) / r.height) * 2 - 1; ptr.cx = e.clientX - r.left; ptr.cy = e.clientY - r.top; ptr.in = true; }, { passive: true });
-  hero.addEventListener("pointerleave", () => { ptr.in = false; ptr.x = ptr.y = 0; });
+  const area = canvas.parentElement;
+  area.addEventListener("pointermove", (e) => { const r = canvas.getBoundingClientRect(); ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.y = ((e.clientY - r.top) / r.height) * 2 - 1; ptr.cx = e.clientX - r.left; ptr.cy = e.clientY - r.top; ptr.in = e.target === canvas; }, { passive: true });
+  area.addEventListener("pointerleave", () => { ptr.in = false; ptr.x = ptr.y = 0; });
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), hitBox = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.6, 4.5), new THREE.MeshBasicMaterial({ visible: false }));
   hitBox.position.y = 0.15; chip.add(hitBox);
   const cast = (obj) => { if (!ptr.in) return null; camera.updateMatrixWorld(); chip.updateMatrixWorld(); ndc.set((ptr.cx / W) * 2 - 1, -(ptr.cy / H) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.intersectObject(obj)[0] || null; };
-  let open = false, k = 0, kFrom = 0, kT = -1; const DUR = rm ? 0.001 : 1.25;
-  let overChip = false, hot = null, hotSince = 0;
-  const setOpen = (o) => { if (o === open) return; open = o; kFrom = k; kT = performance.now(); hero.classList.toggle("chip-open", o);
-    hint.textContent = o ? (HOVER ? "Point at a block to see the repository. Click outside the die to close." : "Tap a block to jump to it. Tap outside the die to close.") : (HOVER ? "Click the chip to open it" : "Tap the chip to open it"); };
-  hint.textContent = HOVER ? "Click the chip to open it" : "Tap the chip to open it";
-  if (!HOVER) tip.querySelector("i").textContent = "Tap to jump to it";
-  canvas.addEventListener("click", (e) => {
-    const r = canvas.getBoundingClientRect(); ptr.cx = e.clientX - r.left; ptr.cy = e.clientY - r.top; ptr.in = true; pick(); // hit-test where the click is (on touch the pointer has already "left")
-    if (open && hot) { go(hot.go); return; }
-    if (!open && overChip) { setOpen(true); return; }
-    if (open) setOpen(false);
-  });
+  let open = false, k = 0, kFrom = 0, kT = -1, opened = false, closing = false; const DUR = rm ? 0.001 : 1.15;
+  let overChip = false, hovPtr = null, hovIdx = null, focused = null;
+  const emit = () => on.state?.({ open, focused, hot: hovIdx || hovPtr });
+  function setOpen(o) { if (o === open) return; if (o) loadDie(); open = o; kFrom = k; kT = performance.now(); if (o) { opened = true; closing = false; } else { focused = null; closing = true; } on.open?.(o); emit(); }
+  function focus(id) { focused = id ? REG.find((r) => r.id === id) || null : null; emit(); }
   function pick() {
     overChip = !!cast(hitBox);
-    let h = null; if (open && k > 0.85) { const hit = cast(dieTop); if (hit) h = regionAt(hit.uv.x, hit.uv.y); }
-    if (h !== hot) { hot = h; hotSince = performance.now(); }
-    canvas.style.cursor = hot || (!open && overChip) ? "pointer" : open ? "zoom-out" : "";
+    let h = null; if (open && k > 0.6) { const hit = cast(dieTop); if (hit) h = regionAt(hit.uv.x, hit.uv.y); }
+    if (h !== hovPtr) { hovPtr = h; emit(); }
+    canvas.style.cursor = hovPtr || (!open && overChip) ? "pointer" : "";
   }
+  canvas.addEventListener("click", (e) => {
+    const r = canvas.getBoundingClientRect(); ptr.cx = e.clientX - r.left; ptr.cy = e.clientY - r.top; ptr.in = true; pick(); // hit-test the click itself (on touch the pointer has already "left")
+    if (!open) { if (overChip) setOpen(true); return; }
+    if (hovPtr) { on.pick?.(hovPtr); return; }
+    if (focused) { on.pick?.(null); return; }
+    setOpen(false);
+  });
 
-  // ---- the frame: renders only while the hero is on screen and the tab is visible
-  let visible = true, raf = 0, last = performance.now(), firstFrame = true; const t0 = performance.now();
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible && !raf) raf = requestAnimationFrame(frame); }, { threshold: 0 }).observe(hero);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden && visible && !raf) { last = performance.now(); raf = requestAnimationFrame(frame); } });
+  // ---- the frame: renders while the hero is on screen (or the chip is open) and the tab is visible
+  let visible = true, raf = 0, last = performance.now(), firstFrame = true, t0 = -1; // t0 = the first frame, so the entrance never starts half-played
+  const wake = () => { if (!raf && !document.hidden && (visible || open || closing)) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; wake(); }, { threshold: 0 }).observe(hero);
+  document.addEventListener("visibilitychange", wake);
   const HS = { a: 0, x: 0, z: 0, w: 0.01, h: 0.01 };
-  const tipShow = (r) => { if (!r) { tip.classList.remove("on"); return; } tip.querySelector("b").textContent = r.id; tip.querySelector("span").textContent = r.p; tip.classList.add("on"); };
   function frame(now) {
-    raf = 0; if (!visible || document.hidden) return;
-    const dt = Math.min(0.05, (now - last) / 1000); last = now; const t = (now - t0) / 1000, ease = (r) => 1 - Math.exp(-r * dt);
+    raf = 0; if (document.hidden || !(visible || open || closing)) return;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now; if (t0 < 0) t0 = now; const t = (now - t0) / 1000, ease = (r) => 1 - Math.exp(-r * dt);
     pick();
-    // lid progress, time-based; a peek at 2.4 s invites the first click (once, never with reduced motion)
-    const kTarget = open ? 1 : 0; k = kT < 0 ? k : lerp(kFrom, kTarget, easeIO(clamp((now - kT) / 1000 / DUR, 0, 1)));
-    const peek = rm || open || kT >= 0 ? 0 : 0.09 * Math.sin(Math.PI * seg(t, 2.4, 3.6)) ** 2;
-    const intro = rm ? 1 : easeOut(seg(t, 0.05, 1.5));
-    const kk = Math.max(k, peek);
-    // camera
-    rig.R = lerp(heroR, openR, easeIO(k)); rig.pitch = lerp(27, 62, easeIO(k)); rig.yaw = lerp(-24, -8, easeIO(k)) + (1 - intro) * -30; rig.ty = lerp(heroTy, DIE_Y, easeIO(k));
+    k = kT < 0 ? k : lerp(kFrom, open ? 1 : 0, easeIO(clamp((now - kT) / 1000 / DUR, 0, 1)));
+    if (closing && k < 0.002 && now - kT > DUR * 1000) { closing = false; on.closed?.(); }
+    // until the first open, the lid peeks every 7 s (2.4 s in) so people notice it opens
+    const pt = (t - 2.4) % 7, peek = rm || opened ? 0 : 0.085 * Math.sin(Math.PI * seg(pt, 0, 1.2)) ** 2;
+    // entrance (11-20: the still image cut to a rotated chip): no turn, the chip only rises the last bit into its pose as the canvas fades in
+    const intro = rm ? 1 : 1 - Math.pow(1 - seg(t, 0, 1.2), 4), kk = Math.max(k, peek), ke = easeIO(k);
+    // targets: hero (tilts back as you scroll past), overview (whole die fills the screen), or one block
+    const sp = open || closing ? 0 : clamp(scrollY / Math.max(1, hero.offsetHeight), 0, 1);
+    const view = Math.max(0.1, 1 - panelPx / W); // fraction of the width left beside the details panel
+    if (!open) Object.assign(tgt, { R: heroR * (1 + 0.25 * sp), pitch: 27 + 26 * sp, yaw: -24 + 10 * sp, tx: 0, ty: heroTy + 0.5 * sp, tz: 0, off: 0 });
+    else if (!focused) Object.assign(tgt, { R: fitR(DIE * 1.06, DIE * 1.06, 0.94 * view, phone ? 0.62 : 0.84), pitch: 76, yaw: -4, tx: 0, ty: DIE_Y, tz: phone ? 0.08 : 0.02, off: panelPx / 2 });
+    else { const [cx, cz] = center(focused), bw = (focused.w / TS) * DIE, bh = (focused.h / TS) * DIE;
+      Object.assign(tgt, { R: fitR(bw * 1.25, bh * 1.25, 0.86 * view, phone ? 0.5 : 0.78), pitch: 82, yaw: -2, tx: cx, ty: DIE_Y, tz: cz + (phone ? bh * 0.35 : 0), off: panelPx / 2 }); }
+    const j = open || closing ? ease(rm ? 60 : 3.2) : 1; // hero follows instantly (its own easing is the scroll)
+    for (const key in tgt) rig[key] += (tgt[key] - rig[key]) * j;
     const p = THREE.MathUtils.degToRad(rig.pitch), y = THREE.MathUtils.degToRad(rig.yaw);
-    camera.position.set(Math.sin(y) * Math.cos(p) * rig.R, Math.sin(p) * rig.R + rig.ty, Math.cos(y) * Math.cos(p) * rig.R); camera.lookAt(0, rig.ty, 0);
-    // chip: lean toward the pointer, a slow float, a small lift under the cursor; all quieter once open
-    const free = rm ? 0 : 1 - 0.75 * k;
+    camera.position.set(rig.tx + Math.sin(y) * Math.cos(p) * rig.R, rig.ty + Math.sin(p) * rig.R, rig.tz + Math.cos(y) * Math.cos(p) * rig.R);
+    camera.lookAt(rig.tx, rig.ty, rig.tz);
+    if (Math.abs(rig.off) > 0.5) camera.setViewOffset(W, H, rig.off, 0, W, H); else camera.clearViewOffset();
+    // the chip: lean, float, lift under the cursor; still once open
+    const free = rm ? 0 : 1 - ke;
     ptr.sx += (ptr.x - ptr.sx) * ease(3); ptr.sy += (ptr.y - ptr.sy) * ease(3);
     chip.rotation.x = ptr.sy * 0.16 * free; chip.rotation.z = -ptr.sx * 0.14 * free;
-    chip.rotation.y = Math.sin(t * 0.22) * 0.05 * free + (1 - intro) * 0.5;
+    chip.rotation.y = Math.sin(t * 0.22) * 0.05 * free;
     const lift = (chip.userData.l = lerp(chip.userData.l || 0, !open && overChip && !rm ? 1 : 0, ease(8)));
-    chip.position.y = Math.sin(t * 0.85) * 0.05 * free - (1 - intro) * 1.4 + 0.12 * lift * (1 - k);
+    chip.position.y = Math.sin(t * 0.85) * 0.05 * free - (1 - intro) * 0.55 + 0.12 * lift * free;
     // lid off, caps fade, die powers on behind it
     const capA = 1 - seg(kk, 0.3, 0.65); capBody.visible = capEnd.visible = capA > 0.001; capBody.material.opacity = capEnd.material.opacity = capA;
-    ihs.position.y = kk * 1.4 + 0.05 * lift * (1 - k); ihs.position.z = -kk * 9; ihs.rotation.x = -kk * 0.8;
+    ihs.position.y = kk * 1.6 + 0.05 * lift * free; ihs.position.z = -kk * 9; ihs.rotation.x = -kk * 0.8;
     WAKE.uWake.value = lerp(-0.16, 1.22, easeIO(seg(kk, 0.08, 0.95)));
-    dieMat.emissiveIntensity = 1.05 * (0.6 + 0.4 * kk);
-    shadow.material.opacity = 0.5 * intro * (1 - 0.6 * k);
-    // the hovered block
-    if (hot) { const tx = ((hot.x + hot.w / 2) / TS - 0.5) * DIE, tz = ((hot.y + hot.h / 2) / TS - 0.5) * DIE, tw = (hot.w / TS) * DIE, th = (hot.h / TS) * DIE, j = HS.a < 0.04 ? 1 : ease(14);
-      HS.x += (tx - HS.x) * j; HS.z += (tz - HS.z) * j; HS.w += (tw - HS.w) * j; HS.h += (th - HS.h) * j; }
-    HS.a += ((hot ? 1 : 0) - HS.a) * ease(10); if (HS.a < 0.003) HS.a = 0;
+    dieMat.emissiveIntensity = 1.1 * (0.55 + 0.45 * kk);
+    shadow.material.opacity = 0.5 * intro * (1 - ke);
+    // the lit block: the pointer's, else the index's, else the focused one
+    const hot = hovPtr || hovIdx || focused;
+    if (hot) { const [hx, hz] = center(hot), tw = (hot.w / TS) * DIE, th = (hot.h / TS) * DIE, jj = HS.a < 0.04 ? 1 : ease(14);
+      HS.x += (hx - HS.x) * jj; HS.z += (hz - HS.z) * jj; HS.w += (tw - HS.w) * jj; HS.h += (th - HS.h) * jj; }
+    HS.a += ((hot && k > 0.6 ? 1 : 0) - HS.a) * ease(10); if (HS.a < 0.003) HS.a = 0;
     hotG.visible = HS.a > 0; hotG.position.set(HS.x, DIE_Y + 0.0012, HS.z); hotG.scale.set(HS.w, 1, HS.h);
-    hotFill.material.opacity = 0.08 * HS.a; hotLine.material.opacity = 0.9 * HS.a;
+    hotFill.material.opacity = 0.07 * HS.a; hotLine.material.opacity = 0.95 * HS.a;
     WAKE.uHotA.value = HS.a; WAKE.uHot.value.set((HS.x - HS.w / 2) / DIE + 0.5, 0.5 - (HS.z + HS.h / 2) / DIE, (HS.x + HS.w / 2) / DIE + 0.5, 0.5 - (HS.z - HS.h / 2) / DIE);
-    tipShow(hot); if (hot) tip.style.transform = `translate(${Math.round(ptr.cx + 16)}px,${Math.round(ptr.cy + 14)}px)`;
     renderer.render(scene, camera);
-    if (firstFrame) { firstFrame = false; hero.classList.add("chip-live"); still?.setAttribute("aria-hidden", "true"); }
+    if (firstFrame) { firstFrame = false; on.live?.(); (window.requestIdleCallback || ((f) => setTimeout(f, 1500)))(loadDie, { timeout: 2500 }); }
+    if (hovPtr && on.tip) on.tip(hovPtr, ptr.cx, ptr.cy); else on.tip?.(null);
     raf = requestAnimationFrame(frame);
   }
   raf = requestAnimationFrame(frame);
-  return { setOpen, get open() { return open; } };
+  return {
+    blocks: REG,
+    open: () => setOpen(true), close: () => setOpen(false), focus,
+    // closed at once, no lid animation: for leaving the explorer straight to a card on the page (the overlay fades instead)
+    reset: () => { if (!open && !closing) return; open = false; closing = false; focused = null; k = 0; kT = -1; panelPx = 0; hovPtr = hovIdx = null; on.open?.(false); on.closed?.(); }, get isOpen() { return open; }, get focused() { return focused; },
+    hover: (id) => { hovIdx = id ? REG.find((r) => r.id === id) || null : null; },
+    panel: (px) => { panelPx = px; },
+  };
 }

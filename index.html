@@ -17,7 +17,7 @@
      you can add stuff around it" -> the live chip is back as a hero toy (lean, click to open, the die as a map), and the
      effects sit around the content (reveals, spotlight, light spill, the copper rail, nav underline, Cmd+K). No pinning,
      no scroll hijack: native scroll, and every effect is skippable. ?rm=1 forces reduced motion. -->
-<script>{const d=document.documentElement;d.classList.add("js");if(/[?&]rm=1/.test(location.search)||matchMedia("(prefers-reduced-motion: reduce)").matches)d.classList.add("rm");setTimeout(()=>d.classList.add("ready"),30)}</script>
+<script>{const d=document.documentElement;d.classList.add("js");if(/[?&]rm=1/.test(location.search)||matchMedia("(prefers-reduced-motion: reduce)").matches)d.classList.add("rm");try{const c=document.createElement("canvas");if(c.getContext("webgl2")||c.getContext("webgl"))d.classList.add("gl")}catch(e){}setTimeout(()=>d.classList.add("ready"),30)}</script>
 <script type="importmap">{"imports":{"three":"./lib/three.module.js","three/addons/":"./lib/addons/"}}</script>
 <style>
 :root{--bg:#100C09;--card:#16110D;--card2:#1D1712;--cream:#EFE7DA;--soft:#D6CCBC;--ink2:#C5BAAB;--ink3:#9C9284;--faint:#5F574D;
@@ -65,17 +65,35 @@ header nav a:not(.pill):hover{color:#fff}
 .js:not(.rm).ready .giant .w span{transform:none}
 .js.ready .giant .w:nth-child(2) span{transition-delay:.08s}
 .stagebox{position:absolute;inset:0;z-index:2}
-.stagebox canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .5s var(--st)}
+.stagebox canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .9s var(--out)}
 .chip-live .stagebox canvas{opacity:1}
 .still{position:absolute;left:50%;top:51%;width:min(62.5%,118svh);transform:translate(-50%,-45%);transition:opacity .45s var(--st);pointer-events:none}
-.chip-live .still{opacity:0}
+.gl .still{display:none} /* 11-20: with WebGL the live chip rises in on its own; the still is only the no-WebGL fallback (a crossfade between the two read as a cut) */
+/* "Show it on the page": the explorer fades out, the page lands on the card, and the card lights up once */
+.xcover{position:fixed;inset:0;z-index:90;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .22s var(--st)}
+html.chip-leaving .xcover{opacity:1}
+.flash{animation:flash 1.6s var(--out)}
+@keyframes flash{0%{box-shadow:0 0 0 1px rgba(142,154,230,.9),0 0 60px rgba(142,154,230,.35);border-color:rgba(142,154,230,.9)}100%{box-shadow:0 0 0 1px rgba(142,154,230,0),0 0 60px rgba(142,154,230,0)}}
+.rm .flash{animation-duration:.01s}
 .tip{position:absolute;left:0;top:0;z-index:6;pointer-events:none;background:rgba(16,12,9,.92);border:1px solid var(--rule2);border-radius:10px;padding:9px 12px;opacity:0;transition:opacity .18s var(--st);white-space:nowrap}
 .tip.on{opacity:1}
 .tip b{display:block;font-size:14px;font-weight:600}
 .tip span{display:block;color:var(--ink3);font-family:"Geist Mono",monospace;font-size:11px;margin-top:2px}
 .tip i{display:block;font-style:normal;color:var(--acc);font-size:12px;margin-top:4px}
-.hint{position:absolute;left:0;right:0;bottom:clamp(18px,3.4vh,34px);text-align:center;z-index:5;color:var(--faint);pointer-events:none;transition:color .3s}
-.hero:hover .hint{color:var(--ink3)}
+/* the hint: a looping cue (a light sweep through the words + a pulsing ring) until the chip has been opened once */
+.hintw{position:absolute;left:0;right:0;bottom:clamp(16px,3vh,30px);z-index:5;display:flex;justify-content:center;pointer-events:none}
+.hint{pointer-events:auto;display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 12px;border-radius:99px;border:1px solid var(--rule2);background:rgba(16,12,9,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--ink2);font-size:12px;transition:border-color .25s,background .25s,transform .16s}
+.hint:hover{border-color:rgba(239,231,218,.5);background:rgba(30,24,19,.7)}
+.hint:active{transform:scale(.97)}
+.pulse{position:relative;width:8px;height:8px;border-radius:2px;background:var(--acc);flex:none}
+.pulse::after{content:"";position:absolute;inset:-5px;border-radius:5px;border:1px solid var(--acc);opacity:0}
+.ht{background:linear-gradient(100deg,var(--ink2) 0 38%,#fff 48%,#C3CAFF 52%,var(--ink2) 62% 100%);background-size:260% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;color:transparent}
+html:not(.rm):not(.chip-seen) .ht{animation:sheen 3.2s var(--st) infinite}
+html:not(.rm):not(.chip-seen) .pulse::after{animation:ping 1.6s var(--out) infinite}
+html:not(.rm):not(.chip-seen) .hint{animation:nudge 3.2s var(--st) infinite}
+@keyframes sheen{0%{background-position:100% 0}55%,100%{background-position:0 0}}
+@keyframes ping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+@keyframes nudge{0%,62%,100%{transform:none}70%{transform:translateY(-3px)}78%{transform:none}84%{transform:translateY(-1.5px)}}
 .intro{position:absolute;z-index:5;left:var(--pad);bottom:clamp(22px,4vh,40px);max-width:440px}
 .intro .k{color:var(--soft);margin-bottom:10px;font-size:13px}
 .intro p{font-size:19px;line-height:1.36;letter-spacing:-.012em;color:#E9E1D4}
@@ -90,8 +108,51 @@ header nav a:not(.pill):hover{color:#fff}
 .js:not(.rm) .fadein{opacity:0;transform:translateY(14px)}
 .js:not(.rm).ready .fadein{opacity:1;transform:none}
 .js.ready .d1{transition-delay:.45s}.js.ready .d2{transition-delay:.55s}.js.ready .d3{transition-delay:.65s}
-.chip-open .giant{opacity:.18;transition:opacity .8s var(--st)}
 .giant{transition:opacity .8s var(--st)}
+
+/* ---- the opened chip takes over the screen: the die is a map of every role and project */
+html.chip-full{overflow:hidden}
+html.chip-full .stagebox{position:fixed;inset:0;z-index:70;height:auto;margin:0}
+.stagebox::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .6s var(--st);
+  background:radial-gradient(ellipse 60% 60% at 50% 48%,#1E1712 0%,#0E0A08 62%,#080605 100%)}
+html.chip-full .stagebox::before{opacity:1}
+html.chip-full .stagebox canvas{-webkit-mask-image:none;mask-image:none}
+.xui{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s var(--st),visibility 0s linear .45s}
+html.chip-full .xui{opacity:1;visibility:visible;transition:opacity .6s var(--st) .35s,visibility 0s}
+.xui>*{pointer-events:auto}
+.xui::before,.xui::after{content:"";position:absolute;left:0;right:0;pointer-events:none}
+.xui::before{top:0;height:150px;background:linear-gradient(rgba(8,6,5,.9),rgba(8,6,5,0))}
+.xui::after{bottom:0;height:140px;background:linear-gradient(rgba(8,6,5,0),rgba(8,6,5,.88))}
+.xidx{transition:opacity .35s var(--st)}
+.xui.panel-on .xidx{opacity:0;pointer-events:none}
+.xtop{position:absolute;left:var(--pad);right:var(--pad);top:22px;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;pointer-events:none}
+.xtop>*{pointer-events:auto}
+.xtop .mono{color:var(--acc)}
+.xtop p{margin-top:6px;color:var(--ink2);font-size:15px;max-width:44ch}
+.xtop .hv{color:var(--ink3)}
+.xclose{display:inline-flex;align-items:center;gap:10px;height:38px;padding:0 14px;border-radius:99px;border:1px solid var(--rule2);background:rgba(16,12,9,.7);font-size:14px}
+.xclose:hover{border-color:rgba(239,231,218,.55)}
+.xidx{position:absolute;left:var(--pad);right:var(--pad);bottom:20px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.xidx button{font-size:12.5px;padding:6px 11px;border-radius:99px;border:1px solid var(--rule2);background:rgba(16,12,9,.72);color:var(--ink2);display:inline-flex;align-items:center;gap:7px;transition:border-color .2s,color .2s,background .2s}
+.xidx button i{width:7px;height:7px;border-radius:2px;background:var(--c)}
+.xidx button:hover,.xidx button.on{color:var(--cream);border-color:var(--c);background:rgba(30,24,19,.85)}
+.xpanel{position:absolute;top:84px;right:var(--pad);bottom:28px;z-index:2;width:min(400px,34vw);overflow:auto;background:rgba(19,15,11,.94);border:1px solid var(--rule2);border-radius:16px;padding:22px;
+  transform:translateX(calc(100% + 60px));transition:transform .55s var(--out);box-shadow:0 40px 80px rgba(0,0,0,.5)}
+.xpanel.on{transform:none}
+.xback{color:var(--ink3);margin-bottom:14px}
+.xback:hover{color:var(--cream)}
+.xbody h3{font-size:30px;font-weight:600;letter-spacing:-.035em;line-height:1.05;margin:10px 0 8px}
+.xbody h4{font-size:26px;font-weight:600;letter-spacing:-.03em;margin:10px 0 6px}
+.xbody .one,.xbody p{color:var(--ink2);font-size:15px;line-height:1.5}
+.xbody .eb{display:flex;flex-wrap:wrap;gap:4px 12px;color:var(--ink3)}
+.xbody .nums{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.xbody .nums b{font-size:22px}
+.xbody ul.b{margin-top:14px}
+.xbody .mini,.xbody .lk{display:none}
+.xbody .n{display:flex;gap:10px;align-items:baseline;margin-top:12px}.xbody .n b{font-size:22px;font-weight:600}
+.xbody .go{display:inline-block;margin-top:12px;color:var(--acc)}
+.xgo{margin-top:18px}
+.xtip{position:fixed}
 
 /* ---- sections */
 section{padding-top:clamp(36px,6vh,72px)}
@@ -107,10 +168,11 @@ section{padding-top:clamp(36px,6vh,72px)}
 #rail .tr.on{stroke:#C3CAFF}
 #rail .ring{fill:none;stroke:var(--cream);stroke-width:1;opacity:0;transition:opacity .3s var(--st)}
 #rail .ring.on{opacity:.8}
-.js:not(.rm) #rail .draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 1.6s var(--out)}
-.js:not(.rm) #rail.on .draw{stroke-dashoffset:0}
-.js:not(.rm) #rail .nd{opacity:0;transform:scale(.4);transform-box:fill-box;transform-origin:center;transition:opacity .4s var(--st),transform .5s var(--out)}
-.js:not(.rm) #rail.on .nd{opacity:1;transform:none}
+/* the rail is drawn by your scroll (site.js clips it at a line 78% down the screen); each node pops as the line reaches it */
+.js:not(.rm) #rail .nd{opacity:0;transform:scale(.3);transform-box:fill-box;transform-origin:center;transition:opacity .3s var(--st),transform .45s var(--out)}
+.js:not(.rm) #rail .nd.lit{opacity:1;transform:none}
+#rail .sig{fill:#C3CAFF;filter:drop-shadow(0 0 6px #8E9AE6)}
+.rm #rail .sig{display:none}
 .rows{display:grid;gap:14px}
 .xc{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(20px,3vw,44px);background:var(--card);border:1px solid var(--rule0);border-radius:16px;padding:clamp(18px,2vw,26px)}
 .xc h3{font-size:21px;font-weight:600;letter-spacing:-.025em;line-height:1.15}
@@ -212,8 +274,22 @@ footer .wrap div:last-child{display:flex;gap:20px;color:var(--ink2)}
 footer a:hover{color:var(--cream)}
 
 /* ---- small things: one-shot reveals, cursor spotlight on cards, headings that rise word by word */
-.js:not(.rm) .rv{opacity:0;transform:translateY(14px);transition:opacity .6s var(--out),transform .6s var(--out)}
+/* reveals: fast, with weight. Cards rise out of a soft blur through an opening clip; their media opens from an inset and
+   settles from a zoom; mono kickers decode; numbers count up. All one-shot and well under a second. */
+.js:not(.rm) .rv{opacity:0;transform:translateY(18px);transition:opacity .6s var(--out),transform .7s var(--out)}
 .js:not(.rm) .rv.on{opacity:1;transform:none}
+.js:not(.rm) .xc.rv,.js:not(.rm) .fc.rv{transform:translateY(46px) scale(.965);filter:blur(7px);clip-path:inset(10% 0 0 0 round 16px);
+  transition:opacity .55s var(--out),transform .85s var(--out),filter .7s var(--out),clip-path .85s var(--out)}
+.js:not(.rm) .xc.rv.on,.js:not(.rm) .fc.rv.on{transform:none;filter:none;clip-path:inset(-3px -3px -3px -3px round 16px)}
+.js:not(.rm) .fc.rv .mp{clip-path:inset(14% 12% 14% 12% round 12px);transition:clip-path 1.1s var(--out) .12s}
+.js:not(.rm) .fc.rv.on .mp{clip-path:inset(0 0 0 0 round 12px)}
+.js:not(.rm) .fc.rv .mp>img,.js:not(.rm) .fc.rv .mp>video,.js:not(.rm) .fc.rv .mp.phones>img{scale:1.16;transition:scale 1.3s var(--out) .12s,transform .9s var(--out)}
+.js:not(.rm) .fc.rv.on .mp>img,.js:not(.rm) .fc.rv.on .mp>video,.js:not(.rm) .fc.rv.on .mp.phones>img{scale:1}
+.mp>img,.mp>video{translate:0 var(--py,0px)}
+.js:not(.rm) .mc.rv{transform:translateX(-24px)}
+.js:not(.rm) .mc.rv.on{transform:none}
+.xc{transition:border-color .3s var(--st)}
+.xc:hover,.fc:hover{border-color:rgba(239,231,218,.12)}
 .wd{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
 .wd>span{display:inline-block}
 .js:not(.rm) .rv .wd>span{transform:translateY(106%);transition:transform .8s var(--out)}
@@ -251,7 +327,12 @@ footer a:hover{color:var(--cream)}
   .stagebox{position:relative;inset:auto;height:74vw;margin-top:-15vw}
   .stagebox canvas{-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 86%,transparent)}
   .still{width:92%;top:50%;transform:translate(-50%,-50%)}
-  .hint{position:relative;left:auto;right:auto;bottom:auto;margin-top:-10px;padding:0 16px}
+  .hintw{position:relative;left:auto;right:auto;bottom:auto;margin-top:-6px}
+  .xtop{top:14px}.xtop p{font-size:13px}.xtop .hv,.xclose .kbd{display:none}
+  .xidx{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;bottom:14px;left:0;right:0;padding:0 16px;scrollbar-width:none}
+  .xidx button{flex:none}
+  .xpanel{top:auto;left:10px;right:10px;bottom:10px;width:auto;max-height:52svh;transform:translateY(calc(100% + 40px))}
+  .xpanel.on{transform:none}
   .intro,.side{position:relative;left:auto;right:auto;bottom:auto;padding:0 16px;max-width:none}
   .intro{margin-top:18px}.intro p{font-size:17px}
   .side{text-align:left;margin-top:20px}
@@ -288,9 +369,14 @@ footer a:hover{color:var(--cream)}
   <div class="stagebox">
     <img class="still" src="media/chip.webp" width="1400" height="700" alt="" fetchpriority="high">
     <canvas id="gl" aria-label="A 3D processor chip etched with my name. Click it to open the lid; the die underneath is drawn from my own code."></canvas>
-    <div class="tip" id="tip" aria-hidden="true"><b></b><span></span><i>Click to jump to it</i></div>
+    <div class="tip" id="tip" aria-hidden="true"><b></b><span></span><i>Click for details</i></div>
+    <div class="xui" id="xui" aria-hidden="true">
+      <div class="xtop"><div><span class="mono">VN-29 die, opened</span><p>Every role and project, one block each. <span class="hv">Point at a block, click for details.</span></p></div><button class="xclose" id="xclose" type="button">Close <span class="kbd">Esc</span></button></div>
+      <div class="xidx" id="xidx" role="list" aria-label="Blocks on the die"></div>
+      <aside class="xpanel" id="xpanel" aria-live="polite"><button class="xback mono" id="xback" type="button">All blocks</button><div class="xbody" id="xbody"></div><button class="pill solid xgo" id="xgo" type="button">Show it on the page</button></aside>
+    </div>
   </div>
-  <p class="hint mono fadein d3" id="hint" aria-live="polite"></p>
+  <div class="hintw fadein d3"><button class="hint mono" id="hint" type="button"><span class="pulse" aria-hidden="true"></span><span class="ht">Click the chip to open it</span></button></div>
   <div class="intro">
     <div class="k mono fadein d1">Software engineer, University of Florida</div>
     <p class="fadein d2">I build robotics and machine-learning systems in Python and C++.</p>
@@ -312,7 +398,7 @@ footer a:hover{color:var(--cream)}
       <p>Newest first.</p>
     </div>
     <div class="xp"><svg id="rail" aria-hidden="true"></svg><div class="rows" id="rows">
-      <article class="xc rv" id="x-icic" data-now>
+      <article class="xc rv" id="x-icic" data-now data-cat="research" data-kicker="Research, ICIC Lab" data-title="SNAP" data-stat="5.2% to 73.0% success" data-w="10">
         <div><h3>Undergraduate Researcher</h3><div class="org">ICIC Lab, University of Florida</div><div class="ctx mono">Robot learning, advisor Dr. Jing Du</div>
           <span class="date now mono">Oct 2026 to now</span>
           <div class="chips mono"><span>Python</span><span>Franka Panda</span><span>π0.5 VLA</span><span>LeRobot</span><span>RealSense</span><span>NVIDIA DGX</span></div></div>
@@ -321,7 +407,7 @@ footer a:hover{color:var(--cream)}
           <li><b>My part:</b> most of the real-robot software on a Franka Panda arm: 100 Hz gamepad teleoperation, two-camera recording, export to LeRobot for fine-tuning, and a live collection dashboard with 137 offline tests.</li>
           <li>Linked the robot laptop to the lab's DGX GPU server, loaded and served the fine-tuned model, and ran the real-robot trials.</li></ul>
       </article>
-      <article class="xc rv" id="x-tea" data-now>
+      <article class="xc rv" id="x-tea" data-now data-cat="research" data-kicker="Research, TEA Lab" data-title="Uncertainty-aware perception" data-stat="32 models on B200 GPUs" data-w="9">
         <div><h3>Undergraduate Researcher</h3><div class="org">TEA Lab, University of Florida</div><div class="ctx mono">Trustworthy Engineered Autonomy Lab, advisor Dr. Ivan Ruchkin</div>
           <span class="date now mono">Oct 2026 to now</span>
           <div class="chips mono"><span>PyTorch</span><span>Python</span><span>Slurm on B200 GPUs</span><span>Uncertainty quantification</span></div></div>
@@ -330,7 +416,7 @@ footer a:hover{color:var(--cream)}
           <li>Cut validation position error by <b>up to 8%</b> over the baseline (5.87 to 5.40 m) with failure detection on par; one run per setting, validation data.</li>
           <li>Ran training <b>3.5x in parallel</b> with Slurm job arrays inside the lab's 24-GPU limit: a 73 GPU-hour grid in about 21 hours.</li></ul>
       </article>
-      <article class="xc rv" id="x-ftl" data-now>
+      <article class="xc rv" id="x-ftl" data-now data-cat="experience" data-kicker="C++17, 6 engineers" data-title="Flash Translation Layer" data-stat="1 Gb SPI NAND" data-w="6">
         <div><h3>Software Engineer</h3><div class="org">Flash Translation Layer Project</div><div class="ctx mono">6-engineer team</div>
           <span class="date now mono">Sep 2026 to now</span>
           <div class="chips mono"><span>C++17</span><span>CMake</span><span>GoogleTest</span><span>CI</span></div></div>
@@ -339,7 +425,7 @@ footer a:hover{color:var(--cream)}
           <li><b>My part:</b> the PageFtl tests in the team's differential harness.</li>
           <li>Taught the team the chip's SPI command protocol.</li></ul>
       </article>
-      <article class="xc rv" id="x-gm" data-now>
+      <article class="xc rv" id="x-gm" data-now data-cat="experience" data-kicker="Rust firmware, Formula SAE" data-title="Gator Motorsports" data-stat="10 Hz telemetry" data-w="8">
         <div><h3>Firmware Engineer</h3><div class="org">Gator Motorsports</div><div class="ctx mono">Formula SAE racing team, University of Florida</div>
           <span class="date now mono">Aug 2026 to now</span>
           <div class="chips mono"><span>Rust</span><span>no_std</span><span>Embassy</span><span>Cortex-M7/M4</span><span>UDP</span></div></div>
@@ -348,7 +434,7 @@ footer a:hover{color:var(--cream)}
           <li>Brought up a 3-layer network stack: the Ethernet MAC driver, a PHY configured over MDIO, and async IPv4/UDP (embassy-net).</li>
           <li>The codec is no_std, so one implementation runs on the microcontroller and the server.</li></ul>
       </article>
-      <article class="xc rv">
+      <article class="xc rv" id="x-pp" data-cat="experience" data-kicker="Java, open source" data-title="Pedro Pathing" data-stat="2,500+ FTC teams" data-w="5">
         <div><h3>Algorithm Developer and Beta Tester</h3><div class="org">Pedro Pathing</div><div class="ctx mono">Open-source robotics library</div>
           <span class="date mono">Jun 2025 to Jan 2026</span>
           <div class="chips mono"><span>Java</span><span>Bezier curves</span><span>PID control</span></div></div>
@@ -356,7 +442,7 @@ footer a:hover{color:var(--cream)}
           <li>Implemented path following over multi-order Bezier curves, tuning velocity profiling and PID heading correction.</li>
           <li>Tested pre-release builds and documented pathing regressions.</li></ul>
       </article>
-      <article class="xc rv" id="x-usf">
+      <article class="xc rv" id="x-usf" data-cat="research" data-kicker="RL research, USF" data-title="LDPC decoder" data-stat="270 seeded trials" data-w="5">
         <div><h3>Student Researcher</h3><div class="org">University of South Florida</div><div class="ctx mono">Coding theory and reinforcement learning</div>
           <span class="date mono">2025</span>
           <div class="chips mono"><span>Python</span><span>stable-baselines3</span><span>DQN</span></div></div>
@@ -368,7 +454,7 @@ footer a:hover{color:var(--cream)}
             <div class="r"><span>BP + LSD</span><div class="bars"><div class="b s1" style="--v:100"><em>100%</em></div><div class="b s2" style="--v:17"><em>46 of 270</em></div></div></div></div>
           <a class="lk" href="https://github.com/vishal-naveen/rl-ldpc-decoding">Repository and 810 trial records</a></div>
       </article>
-      <article class="xc rv">
+      <article class="xc rv" id="x-i2i" data-cat="experience" data-kicker="Web, 2023 to 2025" data-title="Inc to Inc" data-stat="3 production sites" data-w="4">
         <div><h3>Software Developer</h3><div class="org">Inc to Inc</div><div class="ctx mono">Production web development</div>
           <span class="date mono">Jun 2023 to Jul 2025</span>
           <div class="chips mono"><span>JavaScript</span><span>Node.js</span><span>SQL</span><span>PayPal</span></div></div>
@@ -384,7 +470,7 @@ footer a:hover{color:var(--cream)}
       <p>Apps, robot learning and agents. Each number comes from the project's own repository.</p>
     </div>
     <div class="feat">
-      <article class="fc rv" id="p-sixth">
+      <article class="fc rv" id="p-sixth" data-cat="project" data-kicker="iOS, on-device ML" data-title="Sixth Sense" data-stat="15 fps on iPhone 14 Pro" data-w="9">
         <div>
           <div class="eb mono"><span>iOS app, on-device ML</span><span>Sep 2023 to Jun 2025</span><span>Solo</span></div>
           <h3>Sixth Sense</h3>
@@ -395,7 +481,7 @@ footer a:hover{color:var(--cream)}
         </div>
         <div class="amb" style="--img:url(media/navigation.jpg)"></div><div class="mp phones"><img loading="lazy" src="media/detection-dark.jpg" alt="Detection with distance"><img loading="lazy" src="media/navigation.jpg" alt="Turn-by-turn navigation"><img loading="lazy" src="media/mapping.jpg" alt="Recording a route"></div>
       </article>
-      <article class="fc rv" id="p-tvla">
+      <article class="fc rv" id="p-tvla" data-cat="project" data-kicker="Robot learning" data-title="TactileVLA-Edge" data-stat="160 demos, held-out B2" data-w="9">
         <div>
           <div class="eb mono"><span>Robot learning</span><span>Jun 2026 to now</span></div>
           <h3>TactileVLA-Edge</h3>
@@ -406,7 +492,7 @@ footer a:hover{color:var(--cream)}
         </div>
         <div class="amb" style="--img:url(media/act-crop.jpg)"></div><div class="mp"><video src="media/act-crop.mp4" poster="media/act-crop.jpg" muted loop playsinline preload="none" data-inview aria-label="The ACT policy grasping in the held-out cell B2"></video><span class="cap mono">ACT policy, held-out cell B2, real robot</span></div>
       </article>
-      <article class="fc rv" id="p-zero">
+      <article class="fc rv" id="p-zero" data-cat="project" data-kicker="Agents, SwampHacks XII" data-title="Zer0Sh0t" data-stat="3rd of 141 teams" data-w="8">
         <div>
           <div class="eb mono"><span>Agents and robotics</span><span>Oct 2026</span><span>SwampHacks XII, team of 4</span></div>
           <h3>Zer0Sh0t</h3>
@@ -420,11 +506,11 @@ footer a:hover{color:var(--cream)}
     </div>
     <div class="morehead mono rv">More projects</div>
     <div class="more">
-      <article class="mc rv"><div class="eb mono">XR, 3D graphics<br>Gator Hack V</div><h4>Lucid Dreams</h4><p>Turns a video or a few photos into a photoreal, life-size 3D person in your room, in Meta Quest passthrough, opened from one link. Team of 4.</p>
+      <article class="mc rv" id="m-lucid" data-cat="project" data-kicker="XR, Gator Hack V" data-title="Lucid Dreams" data-stat="Top 10 finalist" data-w="5"><div class="eb mono">XR, 3D graphics<br>Gator Hack V</div><h4>Lucid Dreams</h4><p>Turns a video or a few photos into a photoreal, life-size 3D person in your room, in Meta Quest passthrough, opened from one link. Team of 4.</p>
         <div class="n"><b>Top 10</b><span>finalist, Gator Hack V</span></div><div class="chips mono"><span>TypeScript</span><span>three.js</span><span>WebXR</span><span>gsplat</span></div><a class="go" href="https://devpost.com/software/lucid-dreams-j1ycoi">Devpost</a></article>
-      <article class="mc rv"><div class="eb mono">FTC robot code<br>2024 to 2025</div><h4>Midnight: Into the Deep</h4><p>Competition robot code: a five-specimen autonomous on Pedro Pathing for the 2024-25 FTC season.</p>
+      <article class="mc rv" id="m-itd" data-cat="project" data-kicker="FTC, 2024 to 2025" data-title="Midnight: Into the Deep" data-stat="105 pt autonomous" data-w="4"><div class="eb mono">FTC robot code<br>2024 to 2025</div><h4>Midnight: Into the Deep</h4><p>Competition robot code: a five-specimen autonomous on Pedro Pathing for the 2024-25 FTC season.</p>
         <div class="n"><b>105 pts</b><span>autonomous, Florida Championship 2025</span></div><div class="chips mono"><span>Java</span><span>Pedro Pathing</span><span>FTC SDK</span></div><a class="go" href="https://github.com/vishal-naveen/Midnight_IntoTheDeep">Repository</a></article>
-      <article class="mc rv"><div class="eb mono">FTC robot code<br>2025 to 2026</div><h4>Midnight: DECODE</h4><p>A flywheel shooter with Limelight targeting and six autonomous routines for the 2025-26 FTC season.</p>
+      <article class="mc rv" id="m-dec" data-cat="project" data-kicker="FTC, 2025 to 2026" data-title="Midnight: DECODE" data-stat="6 autonomous routines" data-w="4"><div class="eb mono">FTC robot code<br>2025 to 2026</div><h4>Midnight: DECODE</h4><p>A flywheel shooter with Limelight targeting and six autonomous routines for the 2025-26 FTC season.</p>
         <div class="n"><b>6</b><span>autonomous routines, 12 tuning opmodes</span></div><div class="chips mono"><span>Java</span><span>Limelight</span><span>Pedro Pathing</span></div><a class="go" href="https://github.com/vishal-naveen/Midnight_Decode">Repository</a></article>
     </div>
   </section>
@@ -451,6 +537,7 @@ footer a:hover{color:var(--cream)}
 </main>
 <footer><div class="wrap"><div>Vishal Naveen, Gainesville, FL. The die on the chip is drawn from 20,043 lines of my own code. Set in Switzer and Geist Mono.</div><div><a href="https://github.com/vishal-naveen">GitHub</a><a href="https://www.linkedin.com/in/vishalnaveen/">LinkedIn</a><a href="media/resume.pdf">Résumé</a></div></div></footer>
 <div class="grain" aria-hidden="true"></div>
+<div class="xcover" aria-hidden="true"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"><b>Copied</b> vishalnaveen@ufl.edu</div>
 <div id="pk" role="dialog" aria-modal="true" aria-label="Command palette"><div class="pal">
   <input id="pkq" placeholder="Jump to a project, a role, or an action" autocomplete="off" spellcheck="false">
